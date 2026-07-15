@@ -7,8 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model Household {
@@ -73,8 +71,41 @@ model DocumentRequest {
 }
 
 // Enums
-enum Gender { MALE FEMALE OTHER }
-enum CivilStatus { SINGLE MARRIED WIDOWED SEPARATED COHABITING }
-enum DocumentType { CLEARANCE RESIDENCY INDIGENCY BUSINESS GOOD_MORAL ENDORSEMENT }
-enum RequestStatus { PENDING PROCESSING READY RELEASED CANCELLED }
-enum UserRole { SUPER_ADMIN ADMIN STAFF OFFICIAL RESIDENT }
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum CivilStatus {
+  SINGLE
+  MARRIED
+  WIDOWED
+  SEPARATED
+  COHABITING
+}
+
+enum DocumentType {
+  CLEARANCE
+  RESIDENCY
+  INDIGENCY
+  BUSINESS
+  GOOD_MORAL
+  ENDORSEMENT
+}
+
+enum RequestStatus {
+  PENDING
+  PROCESSING
+  READY
+  RELEASED
+  CANCELLED
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  OFFICIAL
+  RESIDENT
+}
