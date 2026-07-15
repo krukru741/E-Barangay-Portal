@@ -51,7 +51,7 @@
     "@mui/lab": "^5.0.0-alpha.70",
     "@mui/material": "^5.4.3",
     "@popperjs/core": "^2.11.2",
-    "@prisma/client": "^7.8.0",
+    "@prisma/client": "^5.21.0",
     "apexcharts-clevision": "3.28.5",
     "bcryptjs": "^3.0.3",
     "clsx": "^1.1.1",
@@ -68,7 +68,6 @@
     "react-popper": "^2.2.5"
   },
   "devDependencies": {
-    "@prisma/config": "^7.8.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "16.11.11",
     "@types/nprogress": "^0.2.0",
