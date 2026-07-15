@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Household {
+  id          String     @id @default(cuid())
+  houseNumber String?
+  street      String
+  sitio       String?
+  purok       String?
+  barangay    String
+  residents   Resident[]
+  createdAt   DateTime   @default(now())
+}
+
+model Resident {
+  id              String   @id @default(cuid())
+  firstName       String
+  middleName      String?
+  lastName        String
+  suffix          String?
+  birthDate       DateTime
+  gender          Gender
+  civilStatus     CivilStatus
+  contactNumber   String?
+  email           String?
+  photo           String?
+  isIndigent      Boolean  @default(false)
+  isSenior        Boolean  @default(false)
+  isPWD           Boolean  @default(false)
+  isVoter         Boolean  @default(false)
+  household       Household @relation(fields: [householdId], references: [id])
+  householdId     String
+  documents       DocumentRequest[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model User {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  passwordHash    String
+  role            UserRole
+  isActive        Boolean   @default(true)
+  documents       DocumentRequest[]
+  createdAt       DateTime  @default(now())
+}
+
+model DocumentRequest {
+  id            String          @id @default(cuid())
+  type          DocumentType
+  purpose       String
+  status        RequestStatus   @default(PENDING)
+  queueNumber   String?
+  requestedAt   DateTime        @default(now())
+  releasedAt    DateTime?
+  remarks       String?
+  resident      Resident        @relation(fields: [residentId], references: [id])
+  residentId    String
+  issuedBy      User?           @relation(fields: [issuedById], references: [id])
+  issuedById    String?
+  documentFile  String?
+}
+
+// Enums
+enum Gender { MALE FEMALE OTHER }
+enum CivilStatus { SINGLE MARRIED WIDOWED SEPARATED COHABITING }
+enum DocumentType { CLEARANCE RESIDENCY INDIGENCY BUSINESS GOOD_MORAL ENDORSEMENT }
+enum RequestStatus { PENDING PROCESSING READY RELEASED CANCELLED }
+enum UserRole { SUPER_ADMIN ADMIN STAFF OFFICIAL RESIDENT }
