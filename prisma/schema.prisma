@@ -82,6 +82,13 @@ model DocumentRequest {
   issuedBy      User?           @relation(fields: [issuedById], references: [id])
   issuedById    String?
   documentFile  String?
+  cedulaNumber  String?
+  cedulaIssuedAt DateTime?
+  feeAmount     Float?
+  orNumber      String?
+  businessName  String?
+  businessAddress String?
+  urgency       DocumentUrgency @default(REGULAR)
 }
 
 model Blotter {
@@ -194,6 +201,11 @@ enum RequestStatus {
   READY
   RELEASED
   CANCELLED
+}
+
+enum DocumentUrgency {
+  REGULAR
+  PRIORITY
 }
 
 enum UserRole {

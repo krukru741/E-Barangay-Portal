@@ -23,6 +23,13 @@ export async function createDocumentRequestRecord(data: DocumentRequestInput) {
       remarks: data.remarks || null,
       queueNumber: queueNumber,
       status: 'PENDING',
+      cedulaNumber: data.cedulaNumber || null,
+      cedulaIssuedAt: data.cedulaIssuedAt ? new Date(data.cedulaIssuedAt) : null,
+      feeAmount: data.feeAmount || 0,
+      orNumber: data.orNumber || null,
+      businessName: data.businessName || null,
+      businessAddress: data.businessAddress || null,
+      urgency: data.urgency || 'REGULAR',
     }
   })
 }

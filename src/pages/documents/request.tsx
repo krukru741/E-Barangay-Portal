@@ -14,16 +14,26 @@ import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import Alert from '@mui/material/Alert'
+import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
+import InputAdornment from '@mui/material/InputAdornment'
 
 export default function DocumentRequestForm() {
   const router = useRouter()
   const [residents, setResidents] = useState<any[]>([])
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     type: 'CLEARANCE',
     purpose: '',
     residentId: '',
-    remarks: ''
+    remarks: '',
+    cedulaNumber: '',
+    cedulaIssuedAt: '',
+    feeAmount: 50,
+    orNumber: '',
+    businessName: '',
+    businessAddress: '',
+    urgency: 'REGULAR',
   })
   
   const [error, setError] = useState('')
@@ -61,11 +71,23 @@ export default function DocumentRequestForm() {
   }
 
   const handleChange = (e: any) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const { name, value } = e.target
+    setFormData((prev: any) => ({ ...prev, [name]: name === 'feeAmount' ? Number(value) : value }))
   }
 
   const selectedResident = residents.find(r => r.id === formData.residentId)
   const showIndigencyWarning = formData.type === 'INDIGENCY' && selectedResident && !selectedResident.isIndigent
+
+  useEffect(() => {
+    // Dynamic price indicator logic
+    let fee = 50
+    if (formData.type === 'INDIGENCY' && selectedResident?.isIndigent) {
+      fee = 0
+    } else if (formData.type === 'BUSINESS') {
+      fee = 100
+    }
+    setFormData((prev: any) => ({ ...prev, feeAmount: fee }))
+  }, [formData.type, selectedResident])
 
   return (
     <Box>
@@ -105,6 +127,19 @@ export default function DocumentRequestForm() {
                     ))}
                   </Select>
                 </FormControl>
+                {selectedResident && (
+                  <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Typography variant="body2" sx={{ mr: 1, alignSelf: 'center' }}>Status:</Typography>
+                    {selectedResident.isIndigent && <Chip size="small" label="Indigent" color="error" />}
+                    {selectedResident.isSenior && <Chip size="small" label="Senior Citizen" color="primary" />}
+                    {selectedResident.isPWD && <Chip size="small" label="PWD" color="warning" />}
+                    {selectedResident.isSoloParent && <Chip size="small" label="Solo Parent" color="secondary" />}
+                    {selectedResident.isVoter && <Chip size="small" label="Registered Voter" color="success" />}
+                    {!selectedResident.isIndigent && !selectedResident.isSenior && !selectedResident.isPWD && !selectedResident.isSoloParent && !selectedResident.isVoter && (
+                      <Typography variant="body2" color="textSecondary">Regular Resident</Typography>
+                    )}
+                  </Box>
+                )}
               </Grid>
 
               <Grid item xs={12} sm={6}>
@@ -136,6 +171,107 @@ export default function DocumentRequestForm() {
                   required
                 />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Urgency / Priority Level</InputLabel>
+                  <Select
+                    label='Urgency / Priority Level'
+                    name='urgency'
+                    value={formData.urgency}
+                    onChange={handleChange}
+                    required
+                  >
+                    <MenuItem value='REGULAR'>Regular</MenuItem>
+                    <MenuItem value='PRIORITY'>Priority / Emergency</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+                <Typography variant="subtitle2" sx={{ mb: 2, color: 'text.secondary' }}>Additional Details</Typography>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label='Cedula (CTC) Number'
+                  name='cedulaNumber'
+                  value={formData.cedulaNumber}
+                  onChange={handleChange}
+                  placeholder="Optional"
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label='Cedula Issued Date'
+                  name='cedulaIssuedAt'
+                  value={formData.cedulaIssuedAt}
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label='Fee Amount'
+                  name='feeAmount'
+                  value={formData.feeAmount}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">₱</InputAdornment>,
+                  }}
+                  helperText={`Estimated Fee: ₱${formData.feeAmount}.00`}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label='O.R. Number (Receipt)'
+                  name='orNumber'
+                  value={formData.orNumber}
+                  onChange={handleChange}
+                  placeholder="Optional"
+                />
+              </Grid>
+
+              {formData.type === 'BUSINESS' && (
+                <>
+                  <Grid item xs={12}>
+                    <Divider sx={{ my: 1 }} />
+                    <Typography variant="subtitle2" sx={{ mb: 2, color: 'text.secondary' }}>Business Information</Typography>
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label='Business Name'
+                      name='businessName'
+                      value={formData.businessName}
+                      onChange={handleChange}
+                      required={formData.type === 'BUSINESS'}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label='Business Address'
+                      name='businessAddress'
+                      value={formData.businessAddress}
+                      onChange={handleChange}
+                      required={formData.type === 'BUSINESS'}
+                    />
+                  </Grid>
+                </>
+              )}
 
               <Grid item xs={12}>
                 <TextField

@@ -20,7 +20,7 @@ export default function DocumentPrintView() {
 
   if (!documentData) return <Typography>Loading...</Typography>
 
-  const { resident, type, purpose, queueNumber, id: documentId } = documentData
+  const { resident, type, purpose, queueNumber, id: documentId, cedulaNumber, cedulaIssuedAt, orNumber, feeAmount, businessName, businessAddress, urgency } = documentData
   const fullName = `${resident.firstName} ${resident.middleName ? resident.middleName + ' ' : ''}${resident.lastName}`
   const age = new Date().getFullYear() - new Date(resident.birthDate).getFullYear()
   const verificationUrl = typeof window !== 'undefined' ? `${window.location.origin}/verify/${documentId}` : ''
@@ -100,7 +100,8 @@ export default function DocumentPrintView() {
           <>
             <Typography sx={{ textIndent: '40px', mb: 2 }}>
               This is to certify that <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-              has applied for a Business Clearance for the business/establishment described as <strong>{purpose.toUpperCase()}</strong> located within the jurisdiction of Barangay Default.
+              has applied for a Business Clearance for the business/establishment named <strong>{businessName ? businessName.toUpperCase() : purpose.toUpperCase()}</strong> 
+              {businessAddress && <span> located at <strong>{businessAddress.toUpperCase()}</strong></span>} within the jurisdiction of Barangay Default.
             </Typography>
             <Typography sx={{ textIndent: '40px', mb: 2 }}>
               The aforementioned business complies with the existing ordinances and regulations of this barangay.
@@ -167,9 +168,19 @@ export default function DocumentPrintView() {
         </Box>
       )}
 
-      <Box sx={{ mt: 5, fontSize: '0.8rem', color: 'gray', borderTop: '1px solid #ccc', pt: 2 }}>
-        <Typography>Reference No: {queueNumber}</Typography>
-        <Typography>Generated via E-Barangay Portal</Typography>
+      {/* Footer Info: Receipt and Cedula */}
+      <Box sx={{ mt: 5, display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', borderTop: '1px solid #ccc', pt: 2 }}>
+        <Box>
+          <Typography><strong>Reference No:</strong> {queueNumber} {urgency === 'PRIORITY' && '(PRIORITY)'}</Typography>
+          <Typography><strong>Amount Paid:</strong> ₱{(feeAmount || 0).toFixed(2)}</Typography>
+          {orNumber && <Typography><strong>O.R. No.:</strong> {orNumber}</Typography>}
+          <Typography color="gray" sx={{ mt: 1 }}>Generated via E-Barangay Portal</Typography>
+        </Box>
+        <Box sx={{ textAlign: 'right' }}>
+          {cedulaNumber && <Typography><strong>CTC No.:</strong> {cedulaNumber}</Typography>}
+          {cedulaIssuedAt && <Typography><strong>Issued On:</strong> {new Date(cedulaIssuedAt).toLocaleDateString()}</Typography>}
+          {cedulaIssuedAt && <Typography><strong>Issued At:</strong> Barangay Default</Typography>}
+        </Box>
       </Box>
     </Box>
   )
