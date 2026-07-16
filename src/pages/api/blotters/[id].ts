@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
-import { getBlotter, changeBlotterStatus, addHearing } from '@/server/services/blotter.service'
+import { getBlotter, changeBlotterStatus, addHearing } from 'src/server/services/blotter.service'
 import { hearingSchema } from 'src/lib/validations/blotter.schema'
 import { UserRole, BlotterStatus } from '@prisma/client'
 

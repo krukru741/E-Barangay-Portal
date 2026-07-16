@@ -73,7 +73,15 @@ const FileBlotterPage = () => {
                   </Grid>
                 )}
                 <Grid item xs={12} sm={6}>
-                  <TextField fullWidth label='Blotter Number' name="blotterNumber" value={formData.blotterNumber} onChange={handleChange} required />
+                  <TextField 
+                    fullWidth 
+                    label='Blotter Number (Auto-Generated)' 
+                    name="blotterNumber" 
+                    value={formData.blotterNumber} 
+                    onChange={handleChange} 
+                    InputProps={{ readOnly: true }}
+                    required 
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField fullWidth label='Incident Type' name="incidentType" value={formData.incidentType} onChange={handleChange} placeholder="e.g. Theft, Assault, Disturbance" required />

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
-import { getBlotters, createBlotter } from '@/server/services/blotter.service'
+import { getBlotters, createBlotter } from 'src/server/services/blotter.service'
 import { blotterSchema } from 'src/lib/validations/blotter.schema'
 import { UserRole } from '@prisma/client'
 
