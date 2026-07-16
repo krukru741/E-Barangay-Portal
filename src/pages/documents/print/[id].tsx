@@ -21,7 +21,9 @@ export default function DocumentPrintView() {
   if (!documentData) return <Typography>Loading...</Typography>
 
   const { resident, type, purpose, queueNumber, id: documentId, cedulaNumber, cedulaIssuedAt, orNumber, feeAmount, businessName, businessAddress, urgency } = documentData
-  const fullName = `${resident.firstName} ${resident.middleName ? resident.middleName + ' ' : ''}${resident.lastName}`
+  
+  // Format Name: LAST NAME, FIRST NAME MIDDLE NAME
+  const fullName = `${resident.lastName}, ${resident.firstName} ${resident.middleName ? resident.middleName : ''}`.trim()
   const age = new Date().getFullYear() - new Date(resident.birthDate).getFullYear()
   const verificationUrl = typeof window !== 'undefined' ? `${window.location.origin}/verify/${documentId}` : ''
 
@@ -29,24 +31,49 @@ export default function DocumentPrintView() {
     window.print()
   }
 
+  // Placeholder arrays for officials (can be swapped with DB fetch later)
+  const kagawads = [
+    "HON. ROMULO GOMEZ JR.",
+    "HON. DENNIS GOMEZ",
+    "HON. ANABELLA ADLAWAN",
+    "HON. LUCIA ECHAVEZ",
+    "HON. ROMEO BONGHANOY",
+    "HON. MARCIAL BREGONDO",
+    "HON. JEANETH KYAMKO"
+  ]
+
+  const skChairman = "HON. JESSABEL B. ABASTAS"
+
   return (
-    <Box sx={{ p: 4, maxWidth: '800px', margin: '0 auto', bgcolor: 'white', color: 'black' }}>
+    <Box sx={{ p: 4, maxWidth: '850px', margin: '0 auto', bgcolor: 'white', color: 'black', fontFamily: 'Arial, sans-serif' }}>
       <Box sx={{ '@media print': { display: 'none' }, mb: 4, textAlign: 'center' }}>
         <Button variant="contained" onClick={handlePrint}>Print Document</Button>
         <Button sx={{ ml: 2 }} variant="outlined" onClick={() => router.push('/documents')}>Back</Button>
       </Box>
 
-      {/* Official Document Letterhead Area */}
-      <Box sx={{ textAlign: 'center', mb: 5, borderBottom: '2px solid black', pb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>REPUBLIC OF THE PHILIPPINES</Typography>
-        <Typography variant="subtitle1">Province of Cebu</Typography>
-        <Typography variant="subtitle1">Municipality of Somewhere</Typography>
-        <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>BARANGAY DEFAULT</Typography>
-        <Typography variant="subtitle2" sx={{ mt: 2 }}>OFFICE OF THE PUNONG BARANGAY</Typography>
+      {/* Header */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 2 }}>
+        {/* Left Logo Placehoder */}
+        <Box sx={{ width: 100, height: 100, borderRadius: '50%', border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Typography variant="caption">CITY LOGO</Typography>
+        </Box>
+
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="body1">Republic of the Philippines</Typography>
+          <Typography variant="body1">Province of Cebu</Typography>
+          <Typography variant="body1">TALISAY CITY</Typography>
+          <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Barangay Camp 4</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 1 }}>OFFICE OF THE BARANGAY CAPTAIN</Typography>
+        </Box>
+
+        {/* Right Logo Placehoder */}
+        <Box sx={{ width: 100, height: 100, borderRadius: '50%', border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Typography variant="caption">BRGY LOGO</Typography>
+        </Box>
       </Box>
 
       {/* Document Title */}
-      <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 5, textTransform: 'uppercase' }}>
+      <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold', mb: 4, textTransform: 'uppercase', letterSpacing: 2 }}>
         {type === 'CLEARANCE' && 'BARANGAY CLEARANCE'}
         {type === 'RESIDENCY' && 'CERTIFICATE OF RESIDENCY'}
         {type === 'INDIGENCY' && 'CERTIFICATE OF INDIGENCY'}
@@ -55,154 +82,145 @@ export default function DocumentPrintView() {
         {type === 'ENDORSEMENT' && 'ENDORSEMENT LETTER'}
       </Typography>
 
-      {/* Document Body */}
-      <Box sx={{ position: 'relative', fontSize: '1.1rem', lineHeight: 2, mb: 10 }}>
-        {/* Resident Photo Slot */}
-        <Box 
-          sx={{ 
-            position: 'absolute', 
-            top: 0, 
-            right: 0, 
-            width: '2in', 
-            height: '2in', 
-            border: '1px solid black', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            overflow: 'hidden'
-          }}
-        >
-          {resident.photo ? (
-            <img src={resident.photo} alt="Resident ID" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <Typography variant="caption" sx={{ color: 'gray' }}>ID PICTURE</Typography>
+      {/* Two Column Layout */}
+      <Box sx={{ display: 'flex', gap: 4 }}>
+        
+        {/* Left Column - Officials */}
+        <Box sx={{ width: '30%', borderRight: '1px dashed #ccc', pr: 2 }}>
+          <Typography sx={{ fontWeight: 'bold', textAlign: 'center', mb: 3 }}>BARANGAY OFFICIALS</Typography>
+          
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline' }}>HON. ROWENA EDAR</Typography>
+            <Typography variant="caption" sx={{ display: 'block' }}>Punong Barangay</Typography>
+          </Box>
+
+          <Typography sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2, fontSize: '0.9rem' }}>
+            SANGGUNIANG BARANGAY<br/>MEMBERS
+          </Typography>
+
+          <Box sx={{ textAlign: 'center', mb: 3, display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {kagawads.map((name, i) => (
+              <Typography key={i} variant="body2" sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>{name}</Typography>
+            ))}
+            <Typography variant="body2" sx={{ fontWeight: 'bold', mt: 1, fontSize: '0.85rem' }}>{skChairman}</Typography>
+          </Box>
+
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Typography sx={{ textDecoration: 'underline' }}>Barangay Treasurer</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', mt: 0.5, fontSize: '0.85rem' }}>ANNABELLE D. ABATAYO</Typography>
+          </Box>
+
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography sx={{ textDecoration: 'underline' }}>Barangay Secretary</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', mt: 0.5, fontSize: '0.85rem' }}>MARIA JONALY LABITAD</Typography>
+          </Box>
+        </Box>
+
+        {/* Right Column - Document Body */}
+        <Box sx={{ width: '70%', pl: 2, display: 'flex', flexDirection: 'column' }}>
+          <Typography sx={{ mb: 4 }}>TO WHOM IT MAY CONCERN:</Typography>
+          
+          {type === 'CLEARANCE' && (
+            <>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This is to certify that Mr./Ms. <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+                is a bona fide resident of Sitio {resident.household?.sitio || '__________'} Purok {resident.household?.purok || '__________'}, 
+                Barangay Camp 4, Talisay City, Cebu.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This is to certify further that he/she is known to us personally as a person of good moral character 
+                and has no criminal record and no disciplinary action against this barangay.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This certification is hereby issued upon the request of the abovementioned person in connection 
+                to his/her application for <strong>{purpose.toUpperCase()}</strong> or for whatever legal purpose that may serve him/her best.
+              </Typography>
+            </>
           )}
-        </Box>
 
-        <Typography sx={{ mb: 4, width: '70%' }}>TO WHOM IT MAY CONCERN:</Typography>
-        
-        {type === 'CLEARANCE' && (
-          <>
-            <Typography sx={{ textIndent: '40px', mb: 2, width: '70%' }}>
-              This is to certify that <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-              single/married, and a bonafide resident of Barangay Default, 
-              is known to me to be of good moral character and a law-abiding citizen.
+          {/* Fallback for other document types */}
+          {type !== 'CLEARANCE' && (
+            <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+               This is to certify that Mr./Ms. <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+               is a bona fide resident of Barangay Camp 4, Talisay City, Cebu. 
+               This certification is issued for <strong>{purpose.toUpperCase()}</strong>.
             </Typography>
-            <Typography sx={{ textIndent: '40px', mb: 2, clear: 'both' }}>
-              This certification is issued upon the request of the above-named person for 
-              <strong> {purpose.toUpperCase()}</strong> and for whatever legal purpose it may serve.
-            </Typography>
-          </>
-        )}
+          )}
 
-        {type === 'RESIDENCY' && (
-          <>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
-              This is to certify that <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-              is a bonafide resident of Barangay Default, residing at {resident.household?.houseNumber} {resident.household?.street} {resident.household?.sitio} {resident.household?.purok}.
-            </Typography>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
-              This certification is issued upon the request of the above-named person to verify his/her place of residence.
-            </Typography>
-          </>
-        )}
-
-        {type === 'INDIGENCY' && (
-          <>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
-              This is to certify that <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-              is a bonafide resident of Barangay Default. 
-            </Typography>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
-              It is further certified that the above-named person belongs to an indigent family in this barangay whose income is not sufficient to meet their daily needs.
-            </Typography>
-          </>
-        )}
-
-        {type === 'BUSINESS' && (
-          <>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
-              This is to certify that <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-              has applied for a Business Clearance for the business/establishment named <strong>{businessName ? businessName.toUpperCase() : purpose.toUpperCase()}</strong> 
-              {businessAddress && <span> located at <strong>{businessAddress.toUpperCase()}</strong></span>} within the jurisdiction of Barangay Default.
-            </Typography>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
-              The aforementioned business complies with the existing ordinances and regulations of this barangay.
-            </Typography>
-          </>
-        )}
-
-        {type === 'GOOD_MORAL' && (
-          <Typography sx={{ textIndent: '40px', mb: 2 }}>
-            This is to certify that <strong>{fullName.toUpperCase()}</strong>, of legal age, 
-            {resident.civilStatus.toLowerCase()}, and a bonafide resident of 
-            Barangay Default, is known to me to be of good moral character and a law-abiding citizen.
+          <Typography sx={{ textIndent: '40px', mb: 6 }}>
+            Issued this <strong>{new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>.
           </Typography>
-        )}
 
-        {type === 'ENDORSEMENT' && (
-          <Typography sx={{ textIndent: '40px', mb: 2 }}>
-            This is to respectfully endorse the request of <strong>{fullName.toUpperCase()}</strong>, a bonafide resident of Barangay Default, to your good office.
-          </Typography>
-        )}
-
-        {type !== 'BUSINESS' && type !== 'ENDORSEMENT' && (
-          <Typography sx={{ textIndent: '40px', mb: 2 }}>
-            This certification is being issued upon the request of the above-named person for the purpose of 
-            <strong> {purpose.toUpperCase()}</strong> and for whatever legal purpose it may serve.
-          </Typography>
-        )}
-
-        <Typography sx={{ textIndent: '40px', mb: 4 }}>
-          Given this <strong>{new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</strong> at 
-          Barangay Default.
-        </Typography>
-      </Box>
-
-      {/* Signatures & Verification */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 5 }}>
-        {type === 'CLEARANCE' ? (
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end' }}>
-            <Box sx={{ width: 100, height: 100, border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Typography variant='caption'>Left Thumbmark</Typography>
+          {/* Signature and Photo Area */}
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ mb: 2, width: '250px' }}>
+              <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline', textAlign: 'center' }}>
+                {fullName.toUpperCase()}
+              </Typography>
+              <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', fontStyle: 'italic' }}>
+                Signature of Applicant
+              </Typography>
             </Box>
-            <Box sx={{ width: 100, height: 100, border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Typography variant='caption'>Right Thumbmark</Typography>
+
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', mb: 4 }}>
+              {/* Photo Box */}
+              <Box 
+                sx={{ 
+                  width: '1.2in', 
+                  height: '1.2in', 
+                  border: '1px solid black', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  overflow: 'hidden'
+                }}
+              >
+                {resident.photo ? (
+                  <img src={resident.photo} alt="Resident ID" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <Typography variant="caption" sx={{ color: 'gray', fontSize: '0.6rem' }}>ID PICTURE</Typography>
+                )}
+              </Box>
+              
+              {/* QR Code Box */}
+              <Box sx={{ width: '1.2in', height: '1.2in', p: 0.5 }}>
+                <QRCodeSVG value={verificationUrl} size={100} style={{ width: '100%', height: '100%' }} />
+              </Box>
             </Box>
           </Box>
-        ) : (
-          <Box>
-            <QRCodeSVG value={verificationUrl} size={100} />
-            <Typography variant='caption' display="block" sx={{ mt: 1 }}>Scan to Verify</Typography>
+
+          {/* Table / Details Footer */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 'auto' }}>
+            <Box>
+              <Box sx={{ fontSize: '0.85rem', lineHeight: 1.5, mb: 3 }}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Typography variant="caption" sx={{ width: 80 }}>Clearance #:</Typography>
+                  <Typography variant="caption" sx={{ borderBottom: '1px solid black', flex: 1, minWidth: 150 }}>{queueNumber}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Typography variant="caption" sx={{ width: 80 }}>Res. Cert. #:</Typography>
+                  <Typography variant="caption" sx={{ borderBottom: '1px solid black', flex: 1 }}>{cedulaNumber || ''}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Typography variant="caption" sx={{ width: 80 }}>Issued on:</Typography>
+                  <Typography variant="caption" sx={{ borderBottom: '1px solid black', flex: 1 }}>
+                     {new Date().toLocaleDateString('en-US')}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Typography variant="caption" sx={{ width: 80 }}>Issued at:</Typography>
+                  <Typography variant="caption" sx={{ borderBottom: '1px solid black', flex: 1 }}>CAMP 4, TALISAY CITY, CEBU</Typography>
+                </Box>
+              </Box>
+              <Typography variant="body2" sx={{ fontStyle: 'italic' }}>Not valid without official seal.</Typography>
+            </Box>
+
+            <Box sx={{ textAlign: 'center', pb: 2 }}>
+              <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline' }}>HON. ROWENA EDAR</Typography>
+              <Typography variant="caption" sx={{ fontStyle: 'italic', display: 'block' }}>Barangay Captain</Typography>
+            </Box>
           </Box>
-        )}
-        
-        <Box sx={{ textAlign: 'center', alignSelf: 'flex-end' }}>
-          <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline' }}>HON. JUAN DELA CRUZ</Typography>
-          <Typography>Punong Barangay</Typography>
-        </Box>
-      </Box>
 
-      {/* Secondary Row for Clearance QR */}
-      {type === 'CLEARANCE' && (
-        <Box sx={{ mt: 4 }}>
-          <QRCodeSVG value={verificationUrl} size={80} />
-          <Typography variant='caption' display="block" sx={{ mt: 1 }}>Scan to Verify</Typography>
-        </Box>
-      )}
-
-      {/* Footer Info: Receipt and Cedula */}
-      <Box sx={{ mt: 5, display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', borderTop: '1px solid #ccc', pt: 2 }}>
-        <Box>
-          <Typography><strong>Reference No:</strong> {queueNumber} {urgency === 'PRIORITY' && '(PRIORITY)'}</Typography>
-          <Typography><strong>Amount Paid:</strong> ₱{(feeAmount || 0).toFixed(2)}</Typography>
-          {orNumber && <Typography><strong>O.R. No.:</strong> {orNumber}</Typography>}
-          <Typography color="gray" sx={{ mt: 1 }}>Generated via E-Barangay Portal</Typography>
-        </Box>
-        <Box sx={{ textAlign: 'right' }}>
-          {cedulaNumber && <Typography><strong>CTC No.:</strong> {cedulaNumber}</Typography>}
-          {cedulaIssuedAt && <Typography><strong>Issued On:</strong> {new Date(cedulaIssuedAt).toLocaleDateString()}</Typography>}
-          {cedulaIssuedAt && <Typography><strong>Issued At:</strong> Barangay Default</Typography>}
         </Box>
       </Box>
     </Box>
