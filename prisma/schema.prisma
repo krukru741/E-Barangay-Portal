@@ -111,6 +111,27 @@ model Announcement {
   expiresAt   DateTime?
 }
 
+model Budget {
+  id          String   @id @default(cuid())
+  year        Int
+  totalAmount Float
+  source      String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Expenditure {
+  id          String   @id @default(cuid())
+  date        DateTime
+  amount      Float
+  category    String
+  payee       String
+  description String
+  receiptUrl  String?
+  createdAt   DateTime @default(now())
+}
+
 // Enums
 enum Gender {
   MALE

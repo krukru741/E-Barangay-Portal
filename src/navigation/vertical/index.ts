@@ -9,6 +9,8 @@ import FileDocumentOutline from 'mdi-material-ui/FileDocumentOutline'
 import LockOutline from 'mdi-material-ui/LockOutline'
 import BullhornOutline from 'mdi-material-ui/BullhornOutline'
 import ChartPie from 'mdi-material-ui/ChartPie'
+import Finance from 'mdi-material-ui/Finance'
+import ScaleBalance from 'mdi-material-ui/ScaleBalance'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -44,6 +46,16 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Analytics & Reports',
       icon: ChartPie,
       path: '/analytics'
+    },
+    {
+      title: 'Finance Mgmt',
+      icon: Finance,
+      path: '/finance'
+    },
+    {
+      title: 'Transparency Board',
+      icon: ScaleBalance,
+      path: '/transparency'
     },
     {
       title: 'Account Settings',
