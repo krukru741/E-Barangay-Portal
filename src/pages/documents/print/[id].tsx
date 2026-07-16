@@ -4,6 +4,8 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import { QRCodeSVG } from 'qrcode.react'
+import { ReactNode } from 'react'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 export default function DocumentPrintView() {
   const router = useRouter()
@@ -23,9 +25,12 @@ export default function DocumentPrintView() {
   const { resident, type, purpose, queueNumber, id: documentId, cedulaNumber, cedulaIssuedAt, orNumber, feeAmount, businessName, businessAddress, urgency } = documentData
   
   // Format Name: LAST NAME, FIRST NAME MIDDLE NAME
+  const titlePrefix = resident.gender === 'FEMALE' ? 'Ms.' : 'Mr.'
   const fullName = `${resident.lastName}, ${resident.firstName} ${resident.middleName ? resident.middleName : ''}`.trim()
   const age = new Date().getFullYear() - new Date(resident.birthDate).getFullYear()
   const verificationUrl = typeof window !== 'undefined' ? `${window.location.origin}/verify/${documentId}` : ''
+  const sitio = resident.household?.sitio ? resident.household.sitio.charAt(0).toUpperCase() + resident.household.sitio.slice(1) : '__________'
+  const purok = resident.household?.purok ? resident.household.purok.charAt(0).toUpperCase() + resident.household.purok.slice(1) : '__________'
 
   const handlePrint = () => {
     window.print()
@@ -123,8 +128,8 @@ export default function DocumentPrintView() {
           {type === 'CLEARANCE' && (
             <>
               <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
-                This is to certify that Mr./Ms. <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-                is a bona fide resident of Sitio {resident.household?.sitio || '__________'} Purok {resident.household?.purok || '__________'}, 
+                This is to certify that {titlePrefix} <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+                is a bona fide resident of Sitio {sitio}, Purok {purok}, 
                 Barangay Camp 4, Talisay City, Cebu.
               </Typography>
               <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
@@ -141,7 +146,7 @@ export default function DocumentPrintView() {
           {/* Fallback for other document types */}
           {type !== 'CLEARANCE' && (
             <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
-               This is to certify that Mr./Ms. <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+               This is to certify that {titlePrefix} <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
                is a bona fide resident of Barangay Camp 4, Talisay City, Cebu. 
                This certification is issued for <strong>{purpose.toUpperCase()}</strong>.
             </Typography>
@@ -215,7 +220,7 @@ export default function DocumentPrintView() {
               <Typography variant="body2" sx={{ fontStyle: 'italic' }}>Not valid without official seal.</Typography>
             </Box>
 
-            <Box sx={{ textAlign: 'center', pb: 2 }}>
+            <Box sx={{ textAlign: 'center', pb: 4 }}>
               <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline' }}>HON. ROWENA EDAR</Typography>
               <Typography variant="caption" sx={{ fontStyle: 'italic', display: 'block' }}>Barangay Captain</Typography>
             </Box>
@@ -226,3 +231,5 @@ export default function DocumentPrintView() {
     </Box>
   )
 }
+
+DocumentPrintView.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
