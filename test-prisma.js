@@ -1,11 +1,11 @@
 require('dotenv/config');
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient({ url: process.env.DATABASE_URL });
+const prisma = new PrismaClient();
 
 async function main() {
   try {
     const users = await prisma.user.findMany();
-    console.log("Users:", users);
+    console.log("Users connection successful!", users.length);
   } catch (e) {
     console.error("Prisma Error:", e);
   } finally {
