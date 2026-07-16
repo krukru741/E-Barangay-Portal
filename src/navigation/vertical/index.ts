@@ -6,6 +6,7 @@ import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import AccountGroupOutline from 'mdi-material-ui/AccountGroupOutline'
 import FileDocumentOutline from 'mdi-material-ui/FileDocumentOutline'
+import LockOutline from 'mdi-material-ui/LockOutline'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -26,6 +27,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Document Requests',
       icon: FileDocumentOutline,
       path: '/documents'
+    },
+    {
+      title: 'Blotter Records',
+      icon: LockOutline,
+      path: '/blotter'
     },
     {
       title: 'Account Settings',
