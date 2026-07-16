@@ -13,6 +13,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import Alert from '@mui/material/Alert'
 
 export default function DocumentRequestForm() {
   const router = useRouter()
@@ -63,6 +64,9 @@ export default function DocumentRequestForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
+  const selectedResident = residents.find(r => r.id === formData.residentId)
+  const showIndigencyWarning = formData.type === 'INDIGENCY' && selectedResident && !selectedResident.isIndigent
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 5 }}>
@@ -76,6 +80,12 @@ export default function DocumentRequestForm() {
         <CardContent>
           {error && <Typography color='error' sx={{ mb: 4 }}>{error}</Typography>}
           
+          {showIndigencyWarning && (
+            <Alert severity='warning' sx={{ mb: 4 }}>
+              Note: This resident is not tagged as "Indigent" in their profile. Are you sure you want to issue a Certificate of Indigency?
+            </Alert>
+          )}
+
           <form onSubmit={handleSubmit}>
             <Grid container spacing={5}>
               <Grid item xs={12} sm={6}>

@@ -14,6 +14,9 @@ import Typography from '@mui/material/Typography'
 import TableContainer from '@mui/material/TableContainer'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
 
 const statusColors: any = {
   PENDING: 'warning',
@@ -28,7 +31,8 @@ export default function DocumentsPage() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
-  useEffect(() => {
+  const fetchDocuments = () => {
+    setLoading(true)
     fetch('/api/documents')
       .then(res => res.json())
       .then(data => {
@@ -39,7 +43,28 @@ export default function DocumentsPage() {
         console.error(err)
         setLoading(false)
       })
+  }
+
+  useEffect(() => {
+    fetchDocuments()
   }, [])
+
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/documents/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      })
+      if (res.ok) {
+        fetchDocuments()
+      } else {
+        console.error('Failed to update status')
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   return (
     <Box>
@@ -61,6 +86,7 @@ export default function DocumentsPage() {
                 <TableCell>Type</TableCell>
                 <TableCell>Resident Name</TableCell>
                 <TableCell>Purpose</TableCell>
+                <TableCell align='center'>Released Date</TableCell>
                 <TableCell align='center'>Status</TableCell>
                 <TableCell align='right'>Action</TableCell>
               </TableRow>
@@ -82,7 +108,34 @@ export default function DocumentsPage() {
                     <TableCell>{doc.resident?.firstName} {doc.resident?.lastName}</TableCell>
                     <TableCell>{doc.purpose}</TableCell>
                     <TableCell align='center'>
-                      <Chip label={doc.status} color={statusColors[doc.status] || 'default'} size='small' />
+                      {doc.releasedAt ? new Date(doc.releasedAt).toLocaleDateString() : '-'}
+                    </TableCell>
+                    <TableCell align='center'>
+                      <FormControl size="small" variant="standard" sx={{ minWidth: 120 }}>
+                        <Select
+                          value={doc.status}
+                          onChange={(e) => handleStatusChange(doc.id, e.target.value)}
+                          disableUnderline
+                          sx={{
+                            '& .MuiSelect-select': {
+                              py: 0.5,
+                              px: 1,
+                              borderRadius: 1,
+                              bgcolor: statusColors[doc.status] ? `${statusColors[doc.status]}.main` : 'default',
+                              color: statusColors[doc.status] ? `${statusColors[doc.status]}.contrastText` : 'inherit',
+                              fontSize: '0.75rem',
+                              fontWeight: 'bold',
+                              textAlign: 'center'
+                            }
+                          }}
+                        >
+                          <MenuItem value='PENDING'>PENDING</MenuItem>
+                          <MenuItem value='PROCESSING'>PROCESSING</MenuItem>
+                          <MenuItem value='READY'>READY</MenuItem>
+                          <MenuItem value='RELEASED'>RELEASED</MenuItem>
+                          <MenuItem value='CANCELLED'>CANCELLED</MenuItem>
+                        </Select>
+                      </FormControl>
                     </TableCell>
                     <TableCell align='right'>
                       <Button size='small' variant='outlined' onClick={() => router.push(`/documents/print/${doc.id}`)}>
