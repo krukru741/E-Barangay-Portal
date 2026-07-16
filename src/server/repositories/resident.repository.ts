@@ -90,26 +90,36 @@ export async function updateResidentRecord(id: string, data: ResidentInput, hous
   })
 }
 
-export async function createHousehold(data: { houseNumber?: string, street: string, sitio?: string, purok?: string, barangay: string }) {
+export async function createHousehold(data: { houseNumber?: string, street: string, village?: string, sitio?: string, purok?: string, barangay: string, city?: string, province?: string, postalCode?: string, country?: string }) {
   return await prisma.household.create({
     data: {
       houseNumber: data.houseNumber || null,
       street: data.street,
+      village: data.village || null,
       sitio: data.sitio || null,
       purok: data.purok || null,
-      barangay: data.barangay
+      barangay: data.barangay,
+      city: data.city || "Talisay City",
+      province: data.province || "Cebu",
+      postalCode: data.postalCode || null,
+      country: data.country || "Philippines"
     }
   })
 }
 
-export async function findOrCreateHousehold(data: { houseNumber?: string, street: string, sitio?: string, purok?: string, barangay: string }) {
+export async function findOrCreateHousehold(data: { houseNumber?: string, street: string, village?: string, sitio?: string, purok?: string, barangay: string, city?: string, province?: string, postalCode?: string, country?: string }) {
   let household = await prisma.household.findFirst({
     where: {
       houseNumber: data.houseNumber || null,
       street: data.street,
+      village: data.village || null,
       sitio: data.sitio || null,
       purok: data.purok || null,
-      barangay: data.barangay
+      barangay: data.barangay,
+      city: data.city || "Talisay City",
+      province: data.province || "Cebu",
+      postalCode: data.postalCode || null,
+      country: data.country || "Philippines"
     }
   })
 
@@ -118,9 +128,14 @@ export async function findOrCreateHousehold(data: { houseNumber?: string, street
       data: {
         houseNumber: data.houseNumber || null,
         street: data.street,
+        village: data.village || null,
         sitio: data.sitio || null,
         purok: data.purok || null,
-        barangay: data.barangay
+        barangay: data.barangay,
+        city: data.city || "Talisay City",
+        province: data.province || "Cebu",
+        postalCode: data.postalCode || null,
+        country: data.country || "Philippines"
       }
     })
   }

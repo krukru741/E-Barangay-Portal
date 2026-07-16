@@ -15,9 +15,14 @@ model Household {
   id          String     @id @default(cuid())
   houseNumber String?
   street      String
+  village     String?
   sitio       String?
   purok       String?
   barangay    String
+  city        String     @default("Talisay City")
+  province    String     @default("Cebu")
+  postalCode  String?
+  country     String     @default("Philippines")
   residents   Resident[]
   createdAt   DateTime   @default(now())
 }

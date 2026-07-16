@@ -49,6 +49,9 @@ export default function DocumentPrintView() {
     if (h.street && h.street.toLowerCase() !== 'n/a') {
       parts.push(h.street)
     }
+    if (h.village && h.village.toLowerCase() !== 'n/a') {
+      parts.push(h.village)
+    }
     if (h.sitio && h.sitio.toLowerCase() !== 'n/a') {
       parts.push(`Sitio ${h.sitio.charAt(0).toUpperCase() + h.sitio.slice(1)}`)
     }
@@ -66,7 +69,14 @@ export default function DocumentPrintView() {
     parts.push(`Barangay ${brgy}`)
 
     // I-add ang Municipality ug Province
-    parts.push("Talisay City", "Cebu")
+    const city = h.city || "Talisay City"
+    const province = h.province || "Cebu"
+    const postalCode = h.postalCode ? ` ${h.postalCode}` : ""
+    const country = h.country || "Philippines"
+
+    parts.push(city)
+    parts.push(`${province}${postalCode}`)
+    parts.push(country.toUpperCase())
 
     return parts.join(", ")
   }

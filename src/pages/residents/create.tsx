@@ -47,9 +47,14 @@ export default function CreateResident() {
     householdId: '',
     houseNumber: '',
     street: '',
+    village: '',
     sitio: '',
     purok: '',
     barangay: 'Poblacion',
+    city: 'Talisay City',
+    province: 'Cebu',
+    postalCode: '',
+    country: 'Philippines',
     isHeadOfFamily: false,
     isIndigent: false,
     isSenior: false,
@@ -86,9 +91,14 @@ export default function CreateResident() {
         householdId: newValue.id,
         houseNumber: newValue.houseNumber || '',
         street: newValue.street || '',
+        village: newValue.village || '',
         sitio: newValue.sitio || '',
         purok: newValue.purok || '',
         barangay: newValue.barangay || 'Poblacion',
+        city: newValue.city || 'Talisay City',
+        province: newValue.province || 'Cebu',
+        postalCode: newValue.postalCode || '',
+        country: newValue.country || 'Philippines',
         isHeadOfFamily: false // Cannot be head if joining existing household
       }))
     } else {
@@ -97,8 +107,14 @@ export default function CreateResident() {
         householdId: '',
         houseNumber: '',
         street: '',
+        village: '',
         sitio: '',
         purok: '',
+        barangay: 'Poblacion',
+        city: 'Talisay City',
+        province: 'Cebu',
+        postalCode: '',
+        country: 'Philippines',
         isHeadOfFamily: false
       }))
     }
@@ -285,8 +301,11 @@ export default function CreateResident() {
               <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='House Number' name='houseNumber' placeholder='e.g. 123' value={formData.houseNumber} onChange={handleChange} disabled={isAddressDisabled} />
               </Grid>
-              <Grid item xs={12} sm={8}>
+              <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='Street Name' name='street' value={formData.street} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField fullWidth label='Village / Subdivision / Phase' name='village' value={formData.village} onChange={handleChange} disabled={isAddressDisabled} inputProps={{ sx: { textTransform: 'capitalize' } }} />
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='Sitio (Optional)' name='sitio' value={formData.sitio} onChange={handleChange} disabled={isAddressDisabled} inputProps={{ sx: { textTransform: 'capitalize' } }} />
@@ -308,6 +327,18 @@ export default function CreateResident() {
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='Barangay' name='barangay' value={formData.barangay} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='City / Municipality' name='city' value={formData.city} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='Province' name='province' value={formData.province} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='Postal Code' name='postalCode' value={formData.postalCode} onChange={handleChange} disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='Country' name='country' value={formData.country} onChange={handleChange} required disabled={isAddressDisabled} />
               </Grid>
 
               <Grid item xs={12}>

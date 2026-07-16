@@ -52,10 +52,14 @@ export default function EditResident() {
     householdId: '',
     houseNumber: '',
     street: '',
+    village: '',
     sitio: '',
     purok: '',
-    purok: '',
-    barangay: 'Barangay Poblacion',
+    barangay: 'Poblacion',
+    city: 'Talisay City',
+    province: 'Cebu',
+    postalCode: '',
+    country: 'Philippines',
     isHeadOfFamily: false,
     isIndigent: false,
     isSenior: false,
@@ -98,9 +102,14 @@ export default function EditResident() {
             householdId: data.householdId || '',
             houseNumber: data.household?.houseNumber || '',
             street: data.household?.street || '',
+            village: data.household?.village || '',
             sitio: data.household?.sitio || '',
             purok: data.household?.purok || '',
-            barangay: data.household?.barangay || 'Barangay Poblacion',
+            barangay: data.household?.barangay || 'Poblacion',
+            city: data.household?.city || 'Talisay City',
+            province: data.household?.province || 'Cebu',
+            postalCode: data.household?.postalCode || '',
+            country: data.household?.country || 'Philippines',
             isHeadOfFamily: data.isHeadOfFamily || false,
             isIndigent: data.isIndigent || false,
             isSenior: data.isSenior || false,
@@ -120,9 +129,14 @@ export default function EditResident() {
               id: data.householdId,
               houseNumber: data.household?.houseNumber,
               street: data.household?.street,
+              village: data.household?.village,
               sitio: data.household?.sitio,
               purok: data.household?.purok,
               barangay: data.household?.barangay,
+              city: data.household?.city,
+              province: data.household?.province,
+              postalCode: data.household?.postalCode,
+              country: data.household?.country,
               // Ideally we fetch the head from households list, but this works as fallback
               residents: data.household?.residents || []
             })
@@ -153,15 +167,30 @@ export default function EditResident() {
         householdId: newValue.id,
         houseNumber: newValue.houseNumber || '',
         street: newValue.street || '',
+        village: newValue.village || '',
         sitio: newValue.sitio || '',
         purok: newValue.purok || '',
-        barangay: newValue.barangay || 'Barangay Poblacion',
+        barangay: newValue.barangay || 'Poblacion',
+        city: newValue.city || 'Talisay City',
+        province: newValue.province || 'Cebu',
+        postalCode: newValue.postalCode || '',
+        country: newValue.country || 'Philippines',
         isHeadOfFamily: false
       }))
     } else {
       setFormData(prev => ({
         ...prev,
         householdId: '',
+        houseNumber: '',
+        street: '',
+        village: '',
+        sitio: '',
+        purok: '',
+        barangay: 'Poblacion',
+        city: 'Talisay City',
+        province: 'Cebu',
+        postalCode: '',
+        country: 'Philippines',
         isHeadOfFamily: false
       }))
     }
@@ -351,8 +380,11 @@ export default function EditResident() {
               <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='House Number' name='houseNumber' placeholder='e.g. 123' value={formData.houseNumber} onChange={handleChange} disabled={isAddressDisabled} />
               </Grid>
-              <Grid item xs={12} sm={8}>
+              <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='Street Name' name='street' value={formData.street} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField fullWidth label='Village / Subdivision / Phase' name='village' value={formData.village} onChange={handleChange} disabled={isAddressDisabled} inputProps={{ sx: { textTransform: 'capitalize' } }} />
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='Sitio (Optional)' name='sitio' value={formData.sitio} onChange={handleChange} disabled={isAddressDisabled} inputProps={{ sx: { textTransform: 'capitalize' } }} />
@@ -374,6 +406,18 @@ export default function EditResident() {
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='Barangay' name='barangay' value={formData.barangay} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='City / Municipality' name='city' value={formData.city} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='Province' name='province' value={formData.province} onChange={handleChange} required disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='Postal Code' name='postalCode' value={formData.postalCode} onChange={handleChange} disabled={isAddressDisabled} />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField fullWidth label='Country' name='country' value={formData.country} onChange={handleChange} required disabled={isAddressDisabled} />
               </Grid>
 
               <Grid item xs={12}>

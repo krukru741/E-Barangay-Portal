@@ -30,9 +30,14 @@ export const residentSchema = z.object({
   // Address / Household fields
   houseNumber: z.string().optional(),
   street: z.string().min(1, "Street is required"),
+  village: z.string().optional(),
   sitio: z.string().optional(),
   purok: z.string().optional(),
-  barangay: z.string().default('Default Barangay'),
+  barangay: z.string().default('Poblacion'),
+  city: z.string().default('Talisay City'),
+  province: z.string().default('Cebu'),
+  postalCode: z.string().optional(),
+  country: z.string().default('Philippines'),
 })
 
 export type ResidentInput = z.infer<typeof residentSchema>
