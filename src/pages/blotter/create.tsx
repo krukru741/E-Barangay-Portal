@@ -16,17 +16,8 @@ const FileBlotterPage = () => {
   const router = useRouter()
   const [residents, setResidents] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
-  const generateBlotterNumber = () => {
-    const date = new Date()
-    const yyyy = date.getFullYear()
-    const mm = String(date.getMonth() + 1).padStart(2, '0')
-    const dd = String(date.getDate()).padStart(2, '0')
-    const random = Math.floor(1000 + Math.random() * 9000) // 4 random digits
-    return `BLOTTER-${yyyy}${mm}${dd}-${random}`
-  }
-
   const [formData, setFormData] = useState({
-    blotterNumber: generateBlotterNumber(),
+    blotterNumber: 'Loading...',
     incidentType: '',
     incidentDate: '',
     location: '',
@@ -40,6 +31,16 @@ const FileBlotterPage = () => {
       .then(res => res.json())
       .then(data => setResidents(Array.isArray(data) ? data : []))
       .catch(() => setError('Failed to load residents'))
+
+    // Fetch next blotter sequence number
+    fetch('/api/blotters/next-number')
+      .then(res => res.json())
+      .then(data => {
+        if (data.nextNumber) {
+          setFormData(prev => ({ ...prev, blotterNumber: data.nextNumber }))
+        }
+      })
+      .catch(console.error)
   }, [])
 
   const handleChange = (e: any) => {

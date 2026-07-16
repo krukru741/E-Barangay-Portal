@@ -1,4 +1,4 @@
-import { findAllBlotters, findBlotterById, createBlotterRecord, updateBlotterStatus, addHearingToBlotter } from '../repositories/blotter.repository'
+import { findAllBlotters, findBlotterById, createBlotterRecord, updateBlotterStatus, addHearingToBlotter, getNextBlotterNumber } from '../repositories/blotter.repository'
 import { BlotterInput, HearingInput } from 'src/lib/validations/blotter.schema'
 import { BlotterStatus, UserRole } from '@prisma/client'
 
@@ -39,4 +39,9 @@ export async function addHearing(blotterId: string, data: HearingInput, userRole
   // If a hearing is added, the status might automatically become MEDIATION
   await updateBlotterStatus(blotterId, BlotterStatus.MEDIATION)
   return await addHearingToBlotter(blotterId, data)
+}
+
+export async function getNextNumber(userRole: UserRole) {
+  checkAdminOrStaffRole(userRole)
+  return await getNextBlotterNumber()
 }
