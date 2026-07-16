@@ -56,18 +56,41 @@ export default function DocumentPrintView() {
       </Typography>
 
       {/* Document Body */}
-      <Box sx={{ fontSize: '1.1rem', lineHeight: 2, mb: 10 }}>
-        <Typography sx={{ mb: 4 }}>TO WHOM IT MAY CONCERN:</Typography>
+      <Box sx={{ position: 'relative', fontSize: '1.1rem', lineHeight: 2, mb: 10 }}>
+        {/* Resident Photo Slot */}
+        <Box 
+          sx={{ 
+            position: 'absolute', 
+            top: 0, 
+            right: 0, 
+            width: '2in', 
+            height: '2in', 
+            border: '1px solid black', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            overflow: 'hidden'
+          }}
+        >
+          {resident.photo ? (
+            <img src={resident.photo} alt="Resident ID" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <Typography variant="caption" sx={{ color: 'gray' }}>ID PICTURE</Typography>
+          )}
+        </Box>
+
+        <Typography sx={{ mb: 4, width: '70%' }}>TO WHOM IT MAY CONCERN:</Typography>
         
         {type === 'CLEARANCE' && (
           <>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
+            <Typography sx={{ textIndent: '40px', mb: 2, width: '70%' }}>
               This is to certify that <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-              {resident.civilStatus.toLowerCase()}, and a bonafide resident of 
-              Barangay Default, is known to me to be of good moral character and a law-abiding citizen in the community.
+              single/married, and a bonafide resident of Barangay Default, 
+              is known to me to be of good moral character and a law-abiding citizen.
             </Typography>
-            <Typography sx={{ textIndent: '40px', mb: 2 }}>
-              Further, this certifies that the above-named person has no pending criminal, civil, or administrative case filed against him/her in this Barangay.
+            <Typography sx={{ textIndent: '40px', mb: 2, clear: 'both' }}>
+              This certification is issued upon the request of the above-named person for 
+              <strong> {purpose.toUpperCase()}</strong> and for whatever legal purpose it may serve.
             </Typography>
           </>
         )}

@@ -55,6 +55,7 @@ export async function createResidentRecord(data: ResidentInput, householdId: str
       occupation: data.occupation || null,
       educationalAttainment: data.educationalAttainment || null,
       incomeBracket: data.incomeBracket || null,
+      photo: data.photo || null,
       householdId: householdId
     }
   })
@@ -83,6 +84,7 @@ export async function updateResidentRecord(id: string, data: ResidentInput, hous
       occupation: data.occupation || null,
       educationalAttainment: data.educationalAttainment || null,
       incomeBracket: data.incomeBracket || null,
+      photo: data.photo || null,
       householdId: householdId
     }
   })

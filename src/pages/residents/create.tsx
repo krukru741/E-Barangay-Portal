@@ -19,12 +19,20 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Divider from '@mui/material/Divider'
 import Autocomplete from '@mui/material/Autocomplete'
-
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import Webcam from 'react-webcam'
+import { useRef, useCallback } from 'react'
+import { resizeImageFile, resizeBase64 } from 'src/utils/image'
 export default function CreateResident() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [households, setHouseholds] = useState<any[]>([])
   const [selectedHousehold, setSelectedHousehold] = useState<any | null>(null)
+  const [cameraOpen, setCameraOpen] = useState(false)
+  const webcamRef = useRef<Webcam>(null)
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -51,7 +59,8 @@ export default function CreateResident() {
     is4PsBeneficiary: false,
     occupation: '',
     educationalAttainment: '',
-    incomeBracket: ''
+    incomeBracket: '',
+    photo: ''
   })
 
   useEffect(() => {
@@ -129,6 +138,33 @@ export default function CreateResident() {
 
   const isAddressDisabled = !!selectedHousehold
 
+  const handleCapture = useCallback(async () => {
+    if (webcamRef.current) {
+      const imageSrc = webcamRef.current.getScreenshot()
+      if (imageSrc) {
+        try {
+          const resized = await resizeBase64(imageSrc)
+          setFormData(prev => ({ ...prev, photo: resized }))
+          setCameraOpen(false)
+        } catch (e) {
+          console.error("Error resizing image", e)
+        }
+      }
+    }
+  }, [webcamRef])
+
+  const handleFileUpload = async (e: any) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      try {
+        const resized = await resizeImageFile(file)
+        setFormData(prev => ({ ...prev, photo: resized }))
+      } catch (err) {
+        console.error("Error uploading image", err)
+      }
+    }
+  }
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 5 }}>
@@ -145,6 +181,41 @@ export default function CreateResident() {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+                  <Box
+                    sx={{
+                      width: 150,
+                      height: 150,
+                      borderRadius: '50%',
+                      bgcolor: 'action.hover',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      mb: 2,
+                      border: '1px solid',
+                      borderColor: 'divider'
+                    }}
+                  >
+                    {formData.photo ? (
+                      <img src={formData.photo} alt="Resident" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <Typography variant="caption" color="textSecondary">No Photo</Typography>
+                    )}
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button variant="outlined" component="label" size="small">
+                      Upload Photo
+                      <input type="file" hidden accept="image/*" onChange={handleFileUpload} />
+                    </Button>
+                    <Button variant="outlined" size="small" onClick={() => setCameraOpen(true)}>
+                      Take Photo
+                    </Button>
+                  </Box>
+                </Box>
+              </Grid>
+
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label='First Name' name='firstName' value={formData.firstName} onChange={handleChange} required />
               </Grid>
@@ -307,6 +378,24 @@ export default function CreateResident() {
           </form>
         </CardContent>
       </Card>
+      <Dialog open={cameraOpen} onClose={() => setCameraOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Take Photo</DialogTitle>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+          {cameraOpen && (
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{ facingMode: "user" }}
+              style={{ width: '100%', maxWidth: '400px', borderRadius: '8px' }}
+            />
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 3, pt: 0 }}>
+          <Button onClick={() => setCameraOpen(false)} color="inherit">Cancel</Button>
+          <Button onClick={handleCapture} variant="contained" color="primary">Capture</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

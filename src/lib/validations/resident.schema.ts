@@ -20,6 +20,7 @@ export const residentSchema = z.object({
   is4PsBeneficiary: z.boolean().optional().default(false),
   isHeadOfFamily: z.boolean().optional().default(false),
   householdId: z.string().optional(),
+  photo: z.string().optional(),
 
   // Socio-Economic Fields
   occupation: z.enum(['UNEMPLOYED', 'STUDENT', 'SELF_EMPLOYED', 'PRIVATE_EMPLOYEE', 'GOVERNMENT_EMPLOYEE', 'OTHERS']).optional().nullable(),
