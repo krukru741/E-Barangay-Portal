@@ -8,6 +8,7 @@ import AccountGroupOutline from 'mdi-material-ui/AccountGroupOutline'
 import FileDocumentOutline from 'mdi-material-ui/FileDocumentOutline'
 import LockOutline from 'mdi-material-ui/LockOutline'
 import BullhornOutline from 'mdi-material-ui/BullhornOutline'
+import ChartPie from 'mdi-material-ui/ChartPie'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -38,6 +39,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Announcements',
       icon: BullhornOutline,
       path: '/announcements'
+    },
+    {
+      title: 'Analytics & Reports',
+      icon: ChartPie,
+      path: '/analytics'
     },
     {
       title: 'Account Settings',
