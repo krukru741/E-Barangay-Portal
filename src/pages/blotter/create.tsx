@@ -16,8 +16,17 @@ const FileBlotterPage = () => {
   const router = useRouter()
   const [residents, setResidents] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
+  const generateBlotterNumber = () => {
+    const date = new Date()
+    const yyyy = date.getFullYear()
+    const mm = String(date.getMonth() + 1).padStart(2, '0')
+    const dd = String(date.getDate()).padStart(2, '0')
+    const random = Math.floor(1000 + Math.random() * 9000) // 4 random digits
+    return `BLOTTER-${yyyy}${mm}${dd}-${random}`
+  }
+
   const [formData, setFormData] = useState({
-    blotterNumber: `BLOTTER-${new Date().getTime()}`,
+    blotterNumber: generateBlotterNumber(),
     incidentType: '',
     incidentDate: '',
     location: '',
