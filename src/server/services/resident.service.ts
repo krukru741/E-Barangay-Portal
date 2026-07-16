@@ -1,38 +1,19 @@
-import { prisma } from 'src/lib/db'
+import { findAllResidents, findResidentByExactMatch, createResidentRecord, findOrCreateDefaultHousehold } from '../repositories/resident.repository'
+import { ResidentInput } from 'src/lib/validations/resident.schema'
 
 export async function getResidents() {
-  return await prisma.resident.findMany({
-    orderBy: { createdAt: 'desc' }
-  })
+  return await findAllResidents()
 }
 
-export async function createResident(data: any) {
-  // To avoid errors with household setup right now, we will create a default household
-  // if none is provided, or link to an existing one. For simplicity in this early phase,
-  // we'll just create a dummy household for the resident.
-  
-  let household = await prisma.household.findFirst()
-  if (!household) {
-    household = await prisma.household.create({
-      data: {
-        street: 'Default Street',
-        barangay: 'Default Barangay'
-      }
-    })
+export async function createResident(data: ResidentInput) {
+  // Check for duplicates
+  const existing = await findResidentByExactMatch(data.firstName, data.lastName, new Date(data.birthDate))
+  if (existing) {
+    throw new Error('Duplicate resident: A resident with the same name and birth date already exists.')
   }
 
-  return await prisma.resident.create({
-    data: {
-      firstName: data.firstName,
-      middleName: data.middleName || null,
-      lastName: data.lastName,
-      suffix: data.suffix || null,
-      birthDate: new Date(data.birthDate),
-      gender: data.gender,
-      civilStatus: data.civilStatus,
-      contactNumber: data.contactNumber || null,
-      email: data.email || null,
-      householdId: household.id
-    }
-  })
+  // Handle household setup
+  const household = await findOrCreateDefaultHousehold()
+
+  return await createResidentRecord(data, household.id)
 }

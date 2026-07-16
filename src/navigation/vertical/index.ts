@@ -5,6 +5,7 @@ import AccountCogOutline from 'mdi-material-ui/AccountCogOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import AccountGroupOutline from 'mdi-material-ui/AccountGroupOutline'
+import FileDocumentOutline from 'mdi-material-ui/FileDocumentOutline'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -20,6 +21,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Residents',
       icon: AccountGroupOutline,
       path: '/residents'
+    },
+    {
+      title: 'Document Requests',
+      icon: FileDocumentOutline,
+      path: '/documents'
     },
     {
       title: 'Account Settings',
