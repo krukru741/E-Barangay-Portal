@@ -1,5 +1,6 @@
 import { findAllResidents, findResidentByExactMatch, createResidentRecord, createHousehold, findResidentById, updateResidentRecord } from '../repositories/resident.repository'
 import { ResidentInput } from 'src/lib/validations/resident.schema'
+import { prisma } from 'src/lib/db'
 
 export async function getResidents() {
   return await findAllResidents()
@@ -18,14 +19,19 @@ export async function createResident(data: ResidentInput) {
 
   // Handle household setup
   let householdId = data.householdId
-  
+
   if (!householdId) {
     const newHousehold = await createHousehold({
       houseNumber: data.houseNumber,
       street: data.street,
+      village: data.village,
       sitio: data.sitio,
       purok: data.purok,
-      barangay: data.barangay || 'Default Barangay'
+      barangay: data.barangay || 'Poblacion',
+      city: data.city || 'Talisay City',
+      province: data.province || 'Cebu',
+      postalCode: data.postalCode,
+      country: data.country || 'Philippines',
     })
     householdId = newHousehold.id
   }
@@ -42,16 +48,39 @@ export async function updateResident(id: string, data: ResidentInput) {
 
   // Handle household setup
   let householdId = data.householdId
-  
+
   if (!householdId) {
+    // No existing household — create a brand new one with all address fields
     const newHousehold = await createHousehold({
       houseNumber: data.houseNumber,
       street: data.street,
+      village: data.village,
       sitio: data.sitio,
       purok: data.purok,
-      barangay: data.barangay || 'Default Barangay'
+      barangay: data.barangay || 'Poblacion',
+      city: data.city || 'Talisay City',
+      province: data.province || 'Cebu',
+      postalCode: data.postalCode,
+      country: data.country || 'Philippines',
     })
     householdId = newHousehold.id
+  } else {
+    // Existing household — update the address fields so changes reflect on the cert
+    await prisma.household.update({
+      where: { id: householdId },
+      data: {
+        houseNumber: data.houseNumber || null,
+        street: data.street,
+        village: data.village || null,
+        sitio: data.sitio || null,
+        purok: data.purok || null,
+        barangay: data.barangay || 'Poblacion',
+        city: data.city || 'Talisay City',
+        province: data.province || 'Cebu',
+        postalCode: data.postalCode || null,
+        country: data.country || 'Philippines',
+      }
+    })
   }
 
   return await updateResidentRecord(id, data, householdId)
