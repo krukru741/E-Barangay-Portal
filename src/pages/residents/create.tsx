@@ -305,11 +305,31 @@ export default function CreateResident() {
                 <Autocomplete
                   options={households}
                   getOptionLabel={(option) => {
-                    const head = option.residents?.find((r: any) => r.firstName)
-                    const headName = head ? `${head.firstName} ${head.lastName}` : 'No Head Assigned'
-                    const address = [option.houseNumber, option.street, option.sitio, option.barangay].filter(Boolean).join(' ')
-                    return `Household of ${headName} (${address})`
+                    // Get head of family (from the API filtered residents)
+                    const head = option.residents?.find((r: any) => r.isHeadOfFamily)
+                      || option.residents?.[0] // fallback to first resident
+                    const headName = head
+                      ? `${head.firstName} ${head.lastName}`.trim()
+                      : 'No Head Assigned'
+
+                    // Build address string — include houseNumber, street, barangay
+                    const addrParts = [
+                      option.houseNumber ? `No. ${option.houseNumber}` : null,
+                      option.street || null,
+                      option.village || null,
+                      option.barangay ? `Brgy. ${option.barangay}` : null,
+                    ].filter(Boolean).join(', ')
+
+                    // Show resident count for extra context
+                    const count = option._count?.residents ?? option.residents?.length ?? 0
+                    const countLabel = count === 1 ? '1 member' : `${count} members`
+
+                    // Short unique ID as disambiguator
+                    const shortId = option.id?.slice(-5).toUpperCase() || ''
+
+                    return `[${shortId}] ${headName} — ${addrParts} (${countLabel})`
                   }}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
                   value={selectedHousehold}
                   onChange={handleHouseholdChange}
                   renderInput={(params) => <TextField {...params} label='Assign to Existing Household (Search by Head of Family or Address)' />}

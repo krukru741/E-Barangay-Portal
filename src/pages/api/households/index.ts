@@ -10,13 +10,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const households = await prisma.household.findMany({
         include: {
           residents: {
-            where: {
-              isHeadOfFamily: true
-            },
             select: {
+              id: true,
               firstName: true,
-              lastName: true
+              lastName: true,
+              isHeadOfFamily: true
             }
+          },
+          _count: {
+            select: { residents: true }
           }
         },
         orderBy: {

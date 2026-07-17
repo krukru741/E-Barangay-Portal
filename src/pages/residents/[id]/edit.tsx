@@ -391,10 +391,25 @@ export default function EditResident() {
                   options={households}
                   getOptionLabel={(option) => {
                     const head = option.residents?.find((r: any) => r.isHeadOfFamily)
-                    const headName = head ? `${head.firstName} ${head.lastName}` : 'No Head Assigned'
-                    const address = [option.houseNumber, option.street, option.sitio, option.barangay].filter(Boolean).join(' ')
-                    return `Household of ${headName} (${address})`
+                      || option.residents?.[0]
+                    const headName = head
+                      ? `${head.firstName} ${head.lastName}`.trim()
+                      : 'No Head Assigned'
+
+                    const addrParts = [
+                      option.houseNumber ? `No. ${option.houseNumber}` : null,
+                      option.street || null,
+                      option.village || null,
+                      option.barangay ? `Brgy. ${option.barangay}` : null,
+                    ].filter(Boolean).join(', ')
+
+                    const count = option._count?.residents ?? option.residents?.length ?? 0
+                    const countLabel = count === 1 ? '1 member' : `${count} members`
+                    const shortId = option.id?.slice(-5).toUpperCase() || ''
+
+                    return `[${shortId}] ${headName} — ${addrParts} (${countLabel})`
                   }}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
                   value={selectedHousehold}
                   onChange={handleHouseholdChange}
                   renderInput={(params) => <TextField {...params} label='Assign to Existing Household' />}
