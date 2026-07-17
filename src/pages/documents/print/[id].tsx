@@ -105,11 +105,35 @@ export default function DocumentPrintView() {
   const skChairName = formatName(skChair?.resident)
 
   return (
-    <Box sx={{ p: 4, maxWidth: '850px', margin: '0 auto', bgcolor: 'white', color: 'black', fontFamily: 'Arial, sans-serif' }}>
-      <Box sx={{ '@media print': { display: 'none' }, mb: 4, textAlign: 'center' }}>
-        <Button variant="contained" onClick={handlePrint}>Print Document</Button>
-        <Button sx={{ ml: 2 }} variant="outlined" onClick={() => router.push('/documents')}>Back</Button>
+    <Box sx={{ p: 4, maxWidth: '850px', margin: '0 auto', bgcolor: 'white', color: 'black', fontFamily: 'Arial, sans-serif', position: 'relative' }}>
+      
+      {/* Watermark */}
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        opacity: 0.1,
+        pointerEvents: 'none',
+        zIndex: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '500px',
+        height: '500px',
+        border: '5px solid #000',
+        borderRadius: '50%',
+      }}>
+        <Typography variant="h1" sx={{ color: '#000', fontWeight: 'bold', textAlign: 'center' }}>
+          TALISAY CITY<br/>SEAL
+        </Typography>
       </Box>
+
+      <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <Box sx={{ '@media print': { display: 'none' }, mb: 4, textAlign: 'center' }}>
+          <Button variant="contained" onClick={handlePrint}>Print Document</Button>
+          <Button sx={{ ml: 2 }} variant="outlined" onClick={() => router.push('/documents')}>Back</Button>
+        </Box>
 
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 2 }}>
@@ -360,6 +384,7 @@ export default function DocumentPrintView() {
           </Box>
 
         </Box>
+      </Box>
       </Box>
 
       {/* Watermark / Copyright */}
