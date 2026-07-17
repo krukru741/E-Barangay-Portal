@@ -79,14 +79,7 @@ const BlotterDetailsPage = () => {
         <Card>
           <CardHeader 
             title={`Blotter Case: ${blotter.blotterNumber}`}
-            action={
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                <Chip label={blotter.status} color={statusColorMap[blotter.status]} />
-                <Button variant="outlined" size="small" onClick={() => window.open(`/blotter/print/${blotter.id}`, '_blank')}>
-                  Print Extract
-                </Button>
-              </Box>
-            }
+            action={<Chip label={blotter.status} color={statusColorMap[blotter.status]} />}
           />
           <CardContent>
             <Grid container spacing={4}>
