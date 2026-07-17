@@ -70,87 +70,154 @@ const AnalyticsDashboard = () => {
 
       {/* Summary Cards */}
       <Grid item xs={12} md={4}>
-        <Card>
-          <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Card sx={{ 
+          background: 'linear-gradient(135deg, #1e88e5 0%, #1565c0 100%)',
+          color: 'white',
+          boxShadow: '0 4px 20px 0 rgba(30, 136, 229, 0.4)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <CardContent sx={{ position: 'relative', zIndex: 1, p: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
-              <Typography variant='caption'>Total Residents</Typography>
-              <Typography variant='h5'>{summary.totalResidents}</Typography>
+              <Typography variant='subtitle2' sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, mb: 0.5 }}>
+                Total Residents
+              </Typography>
+              <Typography variant='h4' sx={{ color: 'white', fontWeight: 700 }}>{summary.totalResidents}</Typography>
             </Box>
-            <AccountGroupOutline sx={{ fontSize: 40, color: 'primary.main' }} />
+            <Box sx={{ p: 1.5, borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.1)' }}>
+              <AccountGroupOutline sx={{ fontSize: 32, color: 'white' }} />
+            </Box>
           </CardContent>
+          <Box sx={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.05)', zIndex: 0 }} />
         </Card>
       </Grid>
       <Grid item xs={12} md={4}>
-        <Card>
-          <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Card sx={{ 
+          background: 'linear-gradient(135deg, #e53935 0%, #c62828 100%)',
+          color: 'white',
+          boxShadow: '0 4px 20px 0 rgba(229, 57, 53, 0.4)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <CardContent sx={{ position: 'relative', zIndex: 1, p: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
-              <Typography variant='caption'>Total Blotter Cases</Typography>
-              <Typography variant='h5'>{summary.totalBlotters}</Typography>
+              <Typography variant='subtitle2' sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, mb: 0.5 }}>
+                Total Blotter Cases
+              </Typography>
+              <Typography variant='h4' sx={{ color: 'white', fontWeight: 700 }}>{summary.totalBlotters}</Typography>
             </Box>
-            <LockOutline sx={{ fontSize: 40, color: 'error.main' }} />
+            <Box sx={{ p: 1.5, borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.1)' }}>
+              <LockOutline sx={{ fontSize: 32, color: 'white' }} />
+            </Box>
           </CardContent>
+          <Box sx={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.05)', zIndex: 0 }} />
         </Card>
       </Grid>
       <Grid item xs={12} md={4}>
-        <Card>
-          <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Card sx={{ 
+          background: 'linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%)',
+          color: 'white',
+          boxShadow: '0 4px 20px 0 rgba(142, 36, 170, 0.4)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <CardContent sx={{ position: 'relative', zIndex: 1, p: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
-              <Typography variant='caption'>Total Announcements</Typography>
-              <Typography variant='h5'>{summary.totalAnnouncements}</Typography>
+              <Typography variant='subtitle2' sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, mb: 0.5 }}>
+                Total Announcements
+              </Typography>
+              <Typography variant='h4' sx={{ color: 'white', fontWeight: 700 }}>{summary.totalAnnouncements}</Typography>
             </Box>
-            <BullhornOutline sx={{ fontSize: 40, color: 'info.main' }} />
+            <Box sx={{ p: 1.5, borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.1)' }}>
+              <BullhornOutline sx={{ fontSize: 32, color: 'white' }} />
+            </Box>
           </CardContent>
+          <Box sx={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.05)', zIndex: 0 }} />
         </Card>
       </Grid>
 
       {/* Charts */}
       <Grid item xs={12} md={6}>
-        <Card>
-          <CardHeader title="Gender Demographics" />
-          <CardContent>
+        <Card sx={{ height: '100%', boxShadow: '0 4px 18px 0 rgba(0,0,0,0.05)' }}>
+          <CardHeader title="Gender Demographics" titleTypographyProps={{ sx: { fontWeight: 600 } }} />
+          <CardContent sx={{ display: 'flex', justifyContent: 'center' }}>
             {genderSeries.length > 0 ? (
               <ReactApexcharts 
-                options={{ labels: genderLabels, legend: { position: 'bottom' } }} 
+                options={{ 
+                  labels: genderLabels, 
+                  colors: ['#0288d1', '#e91e63', '#757575'],
+                  stroke: { width: 0 },
+                  legend: { position: 'bottom', markers: { radius: 12 } } 
+                }} 
                 series={genderSeries} 
                 type="pie" 
-                height={300} 
+                height={320} 
+                width="100%"
               />
-            ) : <Typography>No data</Typography>}
+            ) : <Typography color="textSecondary" sx={{ mt: 5 }}>No data available</Typography>}
           </CardContent>
         </Card>
       </Grid>
 
       <Grid item xs={12} md={6}>
-        <Card>
-          <CardHeader title="Civil Status Demographics" />
-          <CardContent>
+        <Card sx={{ height: '100%', boxShadow: '0 4px 18px 0 rgba(0,0,0,0.05)' }}>
+          <CardHeader title="Civil Status Demographics" titleTypographyProps={{ sx: { fontWeight: 600 } }} />
+          <CardContent sx={{ display: 'flex', justifyContent: 'center' }}>
             {civilStatusSeries.length > 0 ? (
               <ReactApexcharts 
-                options={{ labels: civilStatusLabels, legend: { position: 'bottom' } }} 
+                options={{ 
+                  labels: civilStatusLabels, 
+                  colors: ['#43a047', '#ff9800', '#1e88e5', '#8e24aa', '#e53935'],
+                  stroke: { width: 0 },
+                  legend: { position: 'bottom', markers: { radius: 12 } },
+                  plotOptions: {
+                    pie: {
+                      donut: {
+                        size: '65%',
+                        labels: { show: true, name: { fontSize: '14px' }, value: { fontSize: '20px', fontWeight: 600 } }
+                      }
+                    }
+                  }
+                }} 
                 series={civilStatusSeries} 
                 type="donut" 
-                height={300} 
+                height={320} 
+                width="100%"
               />
-            ) : <Typography>No data</Typography>}
+            ) : <Typography color="textSecondary" sx={{ mt: 5 }}>No data available</Typography>}
           </CardContent>
         </Card>
       </Grid>
 
       <Grid item xs={12}>
-        <Card>
-          <CardHeader title="Blotter Cases by Status" />
+        <Card sx={{ boxShadow: '0 4px 18px 0 rgba(0,0,0,0.05)' }}>
+          <CardHeader title="Blotter Cases by Status" titleTypographyProps={{ sx: { fontWeight: 600 } }} />
           <CardContent>
             {blotterSeries[0].data.length > 0 ? (
               <ReactApexcharts 
                 options={{ 
-                  xaxis: { categories: blotterCategories },
-                  plotOptions: { bar: { borderRadius: 4, horizontal: true } }
+                  xaxis: { categories: blotterCategories, labels: { style: { fontWeight: 500 } } },
+                  yaxis: { labels: { style: { fontWeight: 600, fontSize: '13px' } } },
+                  colors: ['#e53935'],
+                  plotOptions: { 
+                    bar: { 
+                      borderRadius: 6, 
+                      horizontal: true,
+                      dataLabels: { position: 'top' }
+                    } 
+                  },
+                  dataLabels: {
+                    enabled: true,
+                    offsetX: 20,
+                    style: { fontSize: '13px', colors: ['#333'] }
+                  },
+                  grid: { strokeDashArray: 4 }
                 }} 
                 series={blotterSeries} 
                 type="bar" 
                 height={350} 
               />
-            ) : <Typography>No data</Typography>}
+            ) : <Typography color="textSecondary" sx={{ mt: 5 }}>No data available</Typography>}
           </CardContent>
         </Card>
       </Grid>
