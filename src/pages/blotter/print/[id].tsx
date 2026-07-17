@@ -77,7 +77,7 @@ export default function BlotterPrintView() {
   }
 
   return (
-    <Box sx={{ p: 4, maxWidth: '850px', margin: '0 auto', bgcolor: 'white', color: 'black', fontFamily: 'Arial, sans-serif', position: 'relative' }}>
+    <Box sx={{ p: 2, maxWidth: '850px', margin: '0 auto', bgcolor: 'white', color: 'black', fontFamily: 'Arial, sans-serif', position: 'relative' }}>
       
       {/* Watermark */}
       <Box sx={{
@@ -102,155 +102,155 @@ export default function BlotterPrintView() {
       </Box>
 
       <Box sx={{ position: 'relative', zIndex: 1 }}>
-        <Box sx={{ '@media print': { display: 'none' }, mb: 4, textAlign: 'center' }}>
+        <Box sx={{ '@media print': { display: 'none' }, mb: 2, textAlign: 'center' }}>
           <Button variant="contained" onClick={handlePrint}>Print Record</Button>
           <Button sx={{ ml: 2 }} variant="outlined" onClick={() => router.push(`/blotter/${id}`)}>Back</Button>
         </Box>
 
         {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 2, borderBottom: '2px solid black' }}>
-          <Box sx={{ width: 100, height: 100, borderRadius: '50%', border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'white' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, pb: 1, borderBottom: '2px solid black' }}>
+          <Box sx={{ width: 80, height: 80, borderRadius: '50%', border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'white' }}>
             <Typography variant="caption">CITY LOGO</Typography>
           </Box>
 
           <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="body1">Republic of the Philippines</Typography>
-            <Typography variant="body1">Province of Cebu</Typography>
-            <Typography variant="body1">TALISAY CITY</Typography>
+            <Typography variant="body2">Republic of the Philippines</Typography>
+            <Typography variant="body2">Province of Cebu</Typography>
+            <Typography variant="body2">TALISAY CITY</Typography>
             <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Barangay Camp 4</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 1 }}>OFFICE OF THE LUPONG TAGAPAMAYAPA</Typography>
-            <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>Contact: (032) 123-4567 | Email: camp4@talisaycity.gov.ph</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mt: 0.5 }}>OFFICE OF THE LUPONG TAGAPAMAYAPA</Typography>
+            <Typography variant="caption" sx={{ display: 'block' }}>Contact: (032) 123-4567 | Email: camp4@talisaycity.gov.ph</Typography>
           </Box>
 
-          <Box sx={{ width: 100, height: 100, borderRadius: '50%', border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'white' }}>
+          <Box sx={{ width: 80, height: 80, borderRadius: '50%', border: '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'white' }}>
             <Typography variant="caption">BRGY LOGO</Typography>
           </Box>
         </Box>
 
         {/* Title */}
-        <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 'bold', mt: 4, mb: 1, textTransform: 'uppercase', letterSpacing: 2 }}>
-          BARANGAY BLOTTER EXTRACT
+        <Typography variant="h5" sx={{ textAlign: 'center', fontWeight: 'bold', mt: 1, mb: 1, textTransform: 'uppercase', letterSpacing: 2 }}>
+          BARANGAY BLOTTER
         </Typography>
         
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4, px: 2 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>BARANGAY CASE NO.: {blotter.blotterNumber}</Typography>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>DATE REPORTED: {formatDateTime(blotter.filedAt)}</Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, px: 2 }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>BARANGAY CASE NO.: {blotter.blotterNumber}</Typography>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>DATE REPORTED: {formatDateTime(blotter.filedAt)}</Typography>
         </Box>
 
-        <Box sx={{ border: '2px solid black', p: 4, mb: 4, bgcolor: 'rgba(255, 255, 255, 0.85)' }}>
+        <Box sx={{ border: '2px solid black', p: 2, mb: 2, bgcolor: 'rgba(255, 255, 255, 0.85)' }}>
           
           {/* Parties */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 4 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mb: 2 }}>
             <Box>
-              <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Complainant: </Typography>
-              <Typography sx={{ display: 'inline' }}>{complainantDetails}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'inline' }}>Complainant: </Typography>
+              <Typography variant="body2" sx={{ display: 'inline' }}>{complainantDetails}</Typography>
             </Box>
             <Box>
-              <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Respondent: </Typography>
-              <Typography sx={{ display: 'inline' }}>{respondentDetails}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'inline' }}>Respondent: </Typography>
+              <Typography variant="body2" sx={{ display: 'inline' }}>{respondentDetails}</Typography>
             </Box>
           </Box>
 
           {/* Incident Info */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 4 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mb: 2 }}>
             <Box>
-              <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Type of Incident: </Typography>
-              <Typography sx={{ display: 'inline' }}>{blotter.incidentType}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'inline' }}>Type of Incident: </Typography>
+              <Typography variant="body2" sx={{ display: 'inline' }}>{blotter.incidentType}</Typography>
             </Box>
             <Box>
-              <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Date & Time of Incident: </Typography>
-              <Typography sx={{ display: 'inline' }}>{formatDateTime(blotter.incidentDate)}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'inline' }}>Date & Time of Incident: </Typography>
+              <Typography variant="body2" sx={{ display: 'inline' }}>{formatDateTime(blotter.incidentDate)}</Typography>
             </Box>
             <Box>
-              <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Place of Occurrence: </Typography>
-              <Typography sx={{ display: 'inline' }}>{blotter.location}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'inline' }}>Place of Occurrence: </Typography>
+              <Typography variant="body2" sx={{ display: 'inline' }}>{blotter.location}</Typography>
             </Box>
           </Box>
 
           {/* Witnesses */}
-          <Box sx={{ mb: 4 }}>
-            <Typography sx={{ fontWeight: 'bold', display: 'inline' }}>Witness(es): </Typography>
-            <Typography sx={{ display: 'inline' }}>{blotter.witnesses || 'None'}</Typography>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'inline' }}>Witness(es): </Typography>
+            <Typography variant="body2" sx={{ display: 'inline' }}>{blotter.witnesses || 'None'}</Typography>
           </Box>
 
           {/* Narrative */}
-          <Box sx={{ mb: 4 }}>
-            <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline', mb: 1 }}>Narrative:</Typography>
-            <Typography sx={{ whiteSpace: 'pre-wrap', textAlign: 'justify', lineHeight: 1.6, minHeight: '100px' }}>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', textDecoration: 'underline', mb: 0.5 }}>Narrative:</Typography>
+            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', textAlign: 'justify', lineHeight: 1.4 }}>
               {blotter.narrative}
             </Typography>
           </Box>
 
           {/* Action Taken */}
-          <Box sx={{ mb: 4 }}>
-            <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline', mb: 1 }}>Action Taken:</Typography>
-            <Typography sx={{ whiteSpace: 'pre-wrap', textAlign: 'justify', lineHeight: 1.6, minHeight: '50px' }}>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', textDecoration: 'underline', mb: 0.5 }}>Action Taken:</Typography>
+            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', textAlign: 'justify', lineHeight: 1.4 }}>
               {blotter.actionTaken || 'None recorded.'}
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 8 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
             <Box sx={{ textAlign: 'center', width: '250px' }}>
-              <Typography sx={{ borderBottom: '1px solid black', height: '30px' }}></Typography>
+              <Typography sx={{ borderBottom: '1px solid black', height: '20px' }}></Typography>
               <Typography variant="caption" sx={{ fontStyle: 'italic' }}>Signature of Complainant / Date</Typography>
             </Box>
             <Box sx={{ textAlign: 'center', width: '250px' }}>
-              <Typography sx={{ borderBottom: '1px solid black', height: '30px' }}></Typography>
+              <Typography sx={{ borderBottom: '1px solid black', height: '20px' }}></Typography>
               <Typography variant="caption" sx={{ fontStyle: 'italic' }}>Signature of Respondent / Date</Typography>
             </Box>
           </Box>
         </Box>
 
         {/* Case Disposition */}
-        <Box sx={{ border: '2px solid black', p: 3, mb: 4, bgcolor: 'rgba(255, 255, 255, 0.85)' }}>
-          <Typography sx={{ fontWeight: 'bold', mb: 2 }}>CASE DISPOSITION:</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+        <Box sx={{ border: '2px solid black', p: 1.5, mb: 2, bgcolor: 'rgba(255, 255, 255, 0.85)' }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>CASE DISPOSITION:</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox size="small" checked={blotter.status === 'RESOLVED'} sx={{ p: 0, mr: 1, '&.Mui-checked': { color: 'black' } }} />
-              <Typography>Amicably Settled (Panag-uyon)</Typography>
+              <Checkbox size="small" checked={blotter.status === 'RESOLVED'} sx={{ p: 0, mr: 0.5, '&.Mui-checked': { color: 'black' } }} />
+              <Typography variant="body2">Amicably Settled</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox size="small" checked={blotter.status === 'ESCALATED'} sx={{ p: 0, mr: 1, '&.Mui-checked': { color: 'black' } }} />
-              <Typography>Referred to PNP/Court</Typography>
+              <Checkbox size="small" checked={blotter.status === 'ESCALATED'} sx={{ p: 0, mr: 0.5, '&.Mui-checked': { color: 'black' } }} />
+              <Typography variant="body2">Referred to PNP/Court</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox size="small" checked={['OPEN', 'MEDIATION'].includes(blotter.status)} sx={{ p: 0, mr: 1, '&.Mui-checked': { color: 'black' } }} />
-              <Typography>Ongoing Investigation</Typography>
+              <Checkbox size="small" checked={['OPEN', 'MEDIATION'].includes(blotter.status)} sx={{ p: 0, mr: 0.5, '&.Mui-checked': { color: 'black' } }} />
+              <Typography variant="body2">Ongoing Investigation</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox size="small" checked={blotter.status === 'CLOSED'} sx={{ p: 0, mr: 1, '&.Mui-checked': { color: 'black' } }} />
-              <Typography>Dismissed / Closed</Typography>
+              <Checkbox size="small" checked={blotter.status === 'CLOSED'} sx={{ p: 0, mr: 0.5, '&.Mui-checked': { color: 'black' } }} />
+              <Typography variant="body2">Dismissed / Closed</Typography>
             </Box>
           </Box>
         </Box>
 
         {/* Certification Footer */}
-        <Typography sx={{ textIndent: '40px', mb: 4, textAlign: 'justify' }}>
+        <Typography variant="body2" sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
           This is to certify that the above blotter entry is a true and faithful reproduction from the official Barangay Blotter Book. 
           Issued this <strong>{new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</strong> upon the request of the interested party for whatever legal purpose it may serve.
         </Typography>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 8 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 4 }}>
           
           <Box sx={{ textAlign: 'center', width: '250px' }}>
-            <Typography sx={{ borderBottom: '1px solid black', height: '20px' }}></Typography>
-            <Typography sx={{ fontWeight: 'bold' }}>HON. {secretaryName}</Typography>
+            <Typography sx={{ borderBottom: '1px solid black', height: '15px' }}></Typography>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>HON. {secretaryName}</Typography>
             <Typography variant="caption" sx={{ fontStyle: 'italic', display: 'block' }}>Barangay Secretary</Typography>
           </Box>
 
           <Box sx={{ textAlign: 'center', width: '250px' }}>
-            <Typography sx={{ fontWeight: 'bold', textDecoration: 'underline' }}>HON. {captainName}</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', textDecoration: 'underline' }}>HON. {captainName}</Typography>
             <Typography variant="caption" sx={{ fontStyle: 'italic', display: 'block' }}>Punong Barangay / Lupon Chairman</Typography>
           </Box>
         </Box>
 
         {/* QR Code and Meta */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 8 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
           <Box>
-            <QRCodeSVG value={`VERIFY-BLOTTER:${blotter.id}`} size={80} />
-            <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'gray' }}>Scan to Verify</Typography>
+            <QRCodeSVG value={`VERIFY-BLOTTER:${blotter.id}`} size={60} />
+            <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: 'gray' }}>Scan to Verify</Typography>
           </Box>
-          <Typography sx={{ textAlign: 'right', fontSize: '7pt', color: 'gray' }}>
+          <Typography sx={{ textAlign: 'right', fontSize: '6pt', color: 'gray' }}>
             E-barangay Portal ©2026 - Alben Gacayan<br/>
             Printed on: {new Date().toLocaleString()}
           </Typography>
