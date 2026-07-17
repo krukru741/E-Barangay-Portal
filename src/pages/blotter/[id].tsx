@@ -191,7 +191,7 @@ const BlotterDetailsPage = () => {
               Save Status
             </Button>
             
-            <Button fullWidth variant="outlined" sx={{ mt: 4 }} onClick={() => window.print()}>
+            <Button fullWidth variant="outlined" sx={{ mt: 4 }} onClick={() => window.open(`/blotter/print/${blotter.id}`, '_blank')}>
               Print Case Record
             </Button>
           </CardContent>
