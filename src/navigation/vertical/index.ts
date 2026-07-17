@@ -36,6 +36,11 @@ const navigation = (): VerticalNavItemsType => {
       path: '/documents'
     },
     {
+      title: 'Release Log',
+      icon: FileDocumentOutline, // Reusing icon for now
+      path: '/documents/release-log'
+    },
+    {
       title: 'Blotter Records',
       icon: LockOutline,
       path: '/blotter'

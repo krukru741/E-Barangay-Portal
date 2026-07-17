@@ -207,13 +207,80 @@ export default function DocumentPrintView() {
             </>
           )}
 
-          {/* Fallback for other document types */}
-          {type !== 'CLEARANCE' && (
-            <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
-               This is to certify that {titlePrefix} <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
-               is a bona fide resident of {fullAddress}. 
-               This certification is issued for <strong>{purpose.toUpperCase()}</strong>.
-            </Typography>
+          {type === 'RESIDENCY' && (
+            <>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This is to certify that {titlePrefix} <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+                is a bona fide resident of {fullAddress}.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                Based on records of this office, he/she has been residing in this barangay and is known to be a law-abiding citizen of good moral character.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This certification is being issued upon the request of the above-named person for <strong>{purpose.toUpperCase()}</strong> or whatever legal purposes it may serve.
+              </Typography>
+            </>
+          )}
+
+          {type === 'INDIGENCY' && (
+            <>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This is to certify that {titlePrefix} <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+                is a bona fide resident of {fullAddress}.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This further certifies that the above-named person belongs to an indigent family in our barangay whose combined family income is insufficient to support their basic needs.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This certification is being issued upon the request of the above-named person for <strong>{purpose.toUpperCase()}</strong> or whatever legal purposes it may serve.
+              </Typography>
+            </>
+          )}
+
+          {type === 'BUSINESS' && (
+            <>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This is to certify that the business or trade activity described below:
+              </Typography>
+              <Box sx={{ ml: 5, mb: 2 }}>
+                <Typography><strong>Business Name:</strong> {businessName?.toUpperCase()}</Typography>
+                <Typography><strong>Address:</strong> {businessAddress?.toUpperCase()}</Typography>
+                <Typography><strong>Operator/Owner:</strong> {fullName.toUpperCase()}</Typography>
+              </Box>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                has been granted a Barangay Clearance to operate within the territorial jurisdiction of {resident.household?.barangay ? `Barangay ${resident.household.barangay}` : 'this barangay'}, subject to the provisions of existing laws and ordinances.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This clearance is granted for the purpose of securing a <strong>{purpose.toUpperCase()}</strong>.
+              </Typography>
+            </>
+          )}
+
+          {type === 'GOOD_MORAL' && (
+            <>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This is to certify that {titlePrefix} <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+                is a bona fide resident of {fullAddress}.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This is to certify further that he/she is a person of good moral character, has no derogatory record on file, and is a law-abiding citizen in this community.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This certification is hereby issued upon the request of the abovementioned person for <strong>{purpose.toUpperCase()}</strong>.
+              </Typography>
+            </>
+          )}
+
+          {type === 'ENDORSEMENT' && (
+            <>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                This office respectfully endorses the application of {titlePrefix} <strong>{fullName.toUpperCase()}</strong>, {age} years of age, 
+                and a bona fide resident of {fullAddress}.
+              </Typography>
+              <Typography sx={{ textIndent: '40px', mb: 2, textAlign: 'justify' }}>
+                The aforementioned individual is being endorsed for <strong>{purpose.toUpperCase()}</strong>. Any assistance extended to him/her will be highly appreciated by this office.
+              </Typography>
+            </>
           )}
 
           <Typography sx={{ textIndent: '40px', mb: 6 }}>

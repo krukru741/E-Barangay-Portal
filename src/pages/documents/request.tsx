@@ -157,6 +157,7 @@ export default function DocumentRequestForm() {
                     <MenuItem value='INDIGENCY'>Certificate of Indigency</MenuItem>
                     <MenuItem value='BUSINESS'>Business Clearance</MenuItem>
                     <MenuItem value='GOOD_MORAL'>Good Moral Character</MenuItem>
+                    <MenuItem value='ENDORSEMENT'>Endorsement Letter</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
