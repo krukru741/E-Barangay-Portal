@@ -61,6 +61,7 @@
     "next-auth": "^4.24.14",
     "nprogress": "^0.2.0",
     "pg": "^8.22.0",
+    "phil-reg-prov-mun-brgy": "^1.1.0",
     "qrcode.react": "^4.2.0",
     "react": "17.0.2",
     "react-apexcharts": "^1.3.9",
