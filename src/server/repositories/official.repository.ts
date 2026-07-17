@@ -11,6 +11,8 @@ export const getOfficials = async () => {
           lastName: true,
           suffix: true,
           photo: true,
+          contactNumber: true,
+          email: true,
         }
       }
     },
@@ -22,6 +24,16 @@ export const getOfficials = async () => {
 
 export const createOfficial = async (data: Prisma.OfficialUncheckedCreateInput) => {
   return await prisma.official.create({
+    data,
+    include: {
+      resident: true
+    }
+  })
+}
+
+export const updateOfficial = async (id: string, data: Prisma.OfficialUpdateInput) => {
+  return await prisma.official.update({
+    where: { id },
     data,
     include: {
       resident: true

@@ -17,3 +17,13 @@ export const createOfficialSchema = z.object({
 })
 
 export type CreateOfficialInput = z.infer<typeof createOfficialSchema>
+
+export const updateOfficialSchema = z.object({
+  position: z.nativeEnum(Position).optional(),
+  committee: z.string().optional(),
+  termStart: z.coerce.date().optional(),
+  termEnd: z.coerce.date().optional(),
+  isActive: z.boolean().optional(),
+})
+
+export type UpdateOfficialInput = z.infer<typeof updateOfficialSchema>

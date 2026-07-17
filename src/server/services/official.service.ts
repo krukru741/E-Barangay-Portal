@@ -27,3 +27,17 @@ export const registerOfficial = async (data: any, userId: string) => {
   
   return official
 }
+
+export const updateOfficial = async (id: string, data: any, userId: string) => {
+  const official = await officialRepo.updateOfficial(id, data)
+  
+  await logAudit({
+    userId,
+    action: 'UPDATE',
+    entity: 'OFFICIAL',
+    entityId: official.id,
+    details: data
+  })
+  
+  return official
+}
