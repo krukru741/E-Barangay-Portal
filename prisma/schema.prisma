@@ -104,10 +104,13 @@ model Blotter {
   location        String
   narrative       String
   status          BlotterStatus @default(OPEN)
-  complainant     Resident      @relation("Complainant", fields: [complainantId], references: [id])
-  complainantId   String
-  respondent      Resident      @relation("Respondent", fields: [respondentId], references: [id])
-  respondentId    String
+  complainant     Resident?     @relation("Complainant", fields: [complainantId], references: [id])
+  complainantId   String?
+  complainantName String?       // Used if Complainant is not a registered resident
+  respondent      Resident?     @relation("Respondent", fields: [respondentId], references: [id])
+  respondentId    String?
+  respondentName  String?       // Used if Respondent is not a registered resident
+  witnesses       String?       // Free text for witnesses
   hearings        Hearing[]
   filedAt         DateTime      @default(now())
   resolvedAt      DateTime?

@@ -79,7 +79,14 @@ const BlotterDetailsPage = () => {
         <Card>
           <CardHeader 
             title={`Blotter Case: ${blotter.blotterNumber}`}
-            action={<Chip label={blotter.status} color={statusColorMap[blotter.status]} />}
+            action={
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <Chip label={blotter.status} color={statusColorMap[blotter.status]} />
+                <Button variant="outlined" size="small" onClick={() => window.open(`/blotter/print/${blotter.id}`, '_blank')}>
+                  Print Extract
+                </Button>
+              </Box>
+            }
           />
           <CardContent>
             <Grid container spacing={4}>
@@ -104,14 +111,29 @@ const BlotterDetailsPage = () => {
                 <Divider sx={{ my: 2 }} />
               </Grid>
               
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" color="textSecondary">Complainant</Typography>
-                <Typography variant="h6">{blotter.complainant.firstName} {blotter.complainant.lastName}</Typography>
+                {blotter.complainant ? (
+                  <Typography variant="h6">{blotter.complainant.firstName} {blotter.complainant.lastName} <Chip size="small" label="Resident" sx={{ ml: 1, height: 20 }} /></Typography>
+                ) : (
+                  <Typography variant="h6">{blotter.complainantName} <Chip size="small" label="Non-Resident" color="default" sx={{ ml: 1, height: 20 }} /></Typography>
+                )}
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="subtitle2" color="textSecondary">Respondent</Typography>
-                <Typography variant="h6">{blotter.respondent.firstName} {blotter.respondent.lastName}</Typography>
+                {blotter.respondent ? (
+                  <Typography variant="h6">{blotter.respondent.firstName} {blotter.respondent.lastName} <Chip size="small" label="Resident" sx={{ ml: 1, height: 20 }} /></Typography>
+                ) : (
+                  <Typography variant="h6">{blotter.respondentName} <Chip size="small" label="Non-Resident" color="default" sx={{ ml: 1, height: 20 }} /></Typography>
+                )}
               </Grid>
+
+              {blotter.witnesses && (
+                <Grid item xs={12}>
+                  <Typography variant="subtitle2" color="textSecondary" sx={{ mt: 2 }}>Witnesses</Typography>
+                  <Typography>{blotter.witnesses}</Typography>
+                </Grid>
+              )}
 
               <Grid item xs={12}>
                 <Divider sx={{ my: 2 }} />

@@ -11,11 +11,19 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Divider from '@mui/material/Divider'
 
 const FileBlotterPage = () => {
   const router = useRouter()
   const [residents, setResidents] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
+  
+  // Toggles for non-resident mode
+  const [isComplainantResident, setIsComplainantResident] = useState(true)
+  const [isRespondentResident, setIsRespondentResident] = useState(true)
+
   const [formData, setFormData] = useState({
     blotterNumber: 'Loading...',
     incidentType: '',
@@ -23,7 +31,10 @@ const FileBlotterPage = () => {
     location: '',
     narrative: '',
     complainantId: '',
-    respondentId: ''
+    complainantName: '',
+    respondentId: '',
+    respondentName: '',
+    witnesses: ''
   })
 
   useEffect(() => {
@@ -50,15 +61,25 @@ const FileBlotterPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+
+    // Prepare payload
+    const payload = {
+      ...formData,
+      complainantId: isComplainantResident ? formData.complainantId : undefined,
+      complainantName: isComplainantResident ? undefined : formData.complainantName,
+      respondentId: isRespondentResident ? formData.respondentId : undefined,
+      respondentName: isRespondentResident ? undefined : formData.respondentName,
+    }
+
     try {
       const res = await fetch('/api/blotters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       })
       if (!res.ok) {
         const d = await res.json()
-        throw new Error(d.error || 'Failed to file blotter')
+        throw new Error(d.message || d.error || 'Failed to file blotter')
       }
       router.push('/blotter')
     } catch (err: any) {
@@ -103,27 +124,63 @@ const FileBlotterPage = () => {
                   <TextField fullWidth label='Location' name="location" value={formData.location} onChange={handleChange} required />
                 </Grid>
                 
+                <Grid item xs={12}><Divider sx={{ my: 2 }} /></Grid>
+
+                {/* Complainant Section */}
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Complainant</InputLabel>
-                    <Select label='Complainant' name="complainantId" value={formData.complainantId} onChange={handleChange} required>
-                      {residents.map((r) => (
-                        <MenuItem key={r.id} value={r.id}>{r.firstName} {r.lastName}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <FormControlLabel 
+                    control={<Switch checked={isComplainantResident} onChange={(e) => setIsComplainantResident(e.target.checked)} />} 
+                    label="Complainant is a Resident" 
+                  />
+                  {isComplainantResident ? (
+                    <FormControl fullWidth sx={{ mt: 2 }}>
+                      <InputLabel>Select Complainant</InputLabel>
+                      <Select label='Select Complainant' name="complainantId" value={formData.complainantId} onChange={handleChange} required>
+                        {residents.map((r) => (
+                          <MenuItem key={r.id} value={r.id}>{r.firstName} {r.lastName}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <TextField fullWidth sx={{ mt: 2 }} label="Complainant Name (Non-Resident)" name="complainantName" value={formData.complainantName} onChange={handleChange} required />
+                  )}
                 </Grid>
+
+                {/* Respondent Section */}
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Respondent (Suspect/Accused)</InputLabel>
-                    <Select label='Respondent' name="respondentId" value={formData.respondentId} onChange={handleChange} required>
-                      {residents.map((r) => (
-                        <MenuItem key={r.id} value={r.id}>{r.firstName} {r.lastName}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <FormControlLabel 
+                    control={<Switch checked={isRespondentResident} onChange={(e) => setIsRespondentResident(e.target.checked)} />} 
+                    label="Respondent is a Resident" 
+                  />
+                  {isRespondentResident ? (
+                    <FormControl fullWidth sx={{ mt: 2 }}>
+                      <InputLabel>Select Respondent</InputLabel>
+                      <Select label='Select Respondent' name="respondentId" value={formData.respondentId} onChange={handleChange} required>
+                        {residents.map((r) => (
+                          <MenuItem key={r.id} value={r.id}>{r.firstName} {r.lastName}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <TextField fullWidth sx={{ mt: 2 }} label="Respondent Name (Non-Resident)" name="respondentName" value={formData.respondentName} onChange={handleChange} required />
+                  )}
+                </Grid>
+
+                <Grid item xs={12}><Divider sx={{ my: 2 }} /></Grid>
+
+                {/* Witnesses */}
+                <Grid item xs={12}>
+                  <TextField 
+                    fullWidth 
+                    label="Witnesses" 
+                    name="witnesses" 
+                    value={formData.witnesses} 
+                    onChange={handleChange} 
+                    placeholder="List witness names (comma separated) or leave blank if none" 
+                  />
                 </Grid>
                 
+                {/* Narrative */}
                 <Grid item xs={12}>
                   <TextField fullWidth multiline rows={4} label='Incident Narrative' name="narrative" value={formData.narrative} onChange={handleChange} placeholder="Describe what happened in detail..." required />
                 </Grid>

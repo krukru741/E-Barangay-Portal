@@ -37,8 +37,11 @@ export async function createBlotterRecord(data: BlotterInput) {
       incidentDate: new Date(data.incidentDate),
       location: data.location,
       narrative: data.narrative,
-      complainantId: data.complainantId,
-      respondentId: data.respondentId,
+      complainantId: data.complainantId || null,
+      complainantName: data.complainantName || null,
+      respondentId: data.respondentId || null,
+      respondentName: data.respondentName || null,
+      witnesses: data.witnesses || null,
       status: BlotterStatus.OPEN
     }
   })

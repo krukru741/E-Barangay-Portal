@@ -98,8 +98,8 @@ const BlotterDashboard = () => {
                         </TableCell>
                         <TableCell>{row.incidentType}</TableCell>
                         <TableCell>{new Date(row.filedAt).toLocaleDateString()}</TableCell>
-                        <TableCell>{row.complainant?.firstName} {row.complainant?.lastName}</TableCell>
-                        <TableCell>{row.respondent?.firstName} {row.respondent?.lastName}</TableCell>
+                        <TableCell>{row.complainant ? `${row.complainant.firstName} ${row.complainant.lastName}` : row.complainantName}</TableCell>
+                        <TableCell>{row.respondent ? `${row.respondent.firstName} ${row.respondent.lastName}` : row.respondentName}</TableCell>
                         <TableCell>
                           <Chip
                             label={row.status}
