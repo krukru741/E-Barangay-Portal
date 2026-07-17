@@ -101,11 +101,21 @@ export default function ResidentProfile() {
             <CardContent>
               {resident.household ? (
                 <>
+                  {/* --- Address Fields --- */}
                   <Typography variant="body1"><strong>House Number:</strong> {resident.household.houseNumber || 'N/A'}</Typography>
-                  <Typography variant="body1"><strong>Street:</strong> {resident.household.street}</Typography>
+                  <Typography variant="body1"><strong>Street:</strong> {resident.household.street || 'N/A'}</Typography>
+                  {resident.household.village && (
+                    <Typography variant="body1"><strong>Village / Subdivision:</strong> {resident.household.village}</Typography>
+                  )}
                   <Typography variant="body1"><strong>Sitio:</strong> {resident.household.sitio || 'N/A'}</Typography>
-                  <Typography variant="body1"><strong>Purok:</strong> {resident.household.purok || 'N/A'}</Typography>
-                  <Typography variant="body1"><strong>Barangay:</strong> {resident.household.barangay}</Typography>
+                  <Typography variant="body1"><strong>Purok:</strong> {resident.household.purok ? `Purok ${resident.household.purok}` : 'N/A'}</Typography>
+                  <Typography variant="body1"><strong>Barangay:</strong> {resident.household.barangay || 'N/A'}</Typography>
+                  <Typography variant="body1"><strong>City / Municipality:</strong> {resident.household.city || 'N/A'}</Typography>
+                  <Typography variant="body1"><strong>Province:</strong> {resident.household.province || 'N/A'}</Typography>
+                  {resident.household.postalCode && (
+                    <Typography variant="body1"><strong>Postal Code:</strong> {resident.household.postalCode}</Typography>
+                  )}
+                  <Typography variant="body1"><strong>Country:</strong> {resident.household.country || 'Philippines'}</Typography>
 
                   <Divider sx={{ my: 3 }} />
                   <Typography variant="subtitle2" gutterBottom>Household Members:</Typography>
