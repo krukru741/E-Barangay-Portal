@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { usePhilAddress, toTitleCase } from 'src/hooks/usePhilAddress'
 
 // MUI Imports
 import Box from '@mui/material/Box'
@@ -27,6 +28,18 @@ import Webcam from 'react-webcam'
 import { useRef, useCallback } from 'react'
 import { resizeImageFile, resizeBase64 } from 'src/utils/image'
 export default function CreateResident() {
+  const {
+    provinces,
+    cities,
+    barangays,
+    selectedProvCode,
+    selectedMunCode,
+    handleProvinceChange,
+    handleCityChange,
+    getProvCodeByName,
+    getMunCodeByName,
+  } = usePhilAddress('0722', '') // 0722 = Cebu default
+
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [households, setHouseholds] = useState<any[]>([])
@@ -86,6 +99,12 @@ export default function CreateResident() {
   const handleHouseholdChange = (event: any, newValue: any | null) => {
     setSelectedHousehold(newValue)
     if (newValue) {
+      const provCode = getProvCodeByName(newValue.province || 'Cebu')
+      handleProvinceChange(provCode)
+      // Need a tick for cities to load before setting mun code
+      setTimeout(() => {
+        handleCityChange(getMunCodeByName(newValue.city || 'Talisay City', provCode))
+      }, 0)
       setFormData(prev => ({
         ...prev,
         householdId: newValue.id,
@@ -99,9 +118,11 @@ export default function CreateResident() {
         province: newValue.province || 'Cebu',
         postalCode: newValue.postalCode || '',
         country: newValue.country || 'Philippines',
-        isHeadOfFamily: false // Cannot be head if joining existing household
+        isHeadOfFamily: false
       }))
     } else {
+      handleProvinceChange(getProvCodeByName('Cebu'))
+      handleCityChange('')
       setFormData(prev => ({
         ...prev,
         householdId: '',
@@ -325,19 +346,50 @@ export default function CreateResident() {
                   </Select>
                 </FormControl>
               </Grid>
+              {/* --- Province Dropdown --- */}
               <Grid item xs={12} sm={4}>
-                <TextField fullWidth label='Barangay' name='barangay' value={formData.barangay} onChange={handleChange} required disabled={isAddressDisabled} />
+                <Autocomplete
+                  options={provinces}
+                  getOptionLabel={(o) => toTitleCase(o.name)}
+                  value={provinces.find(p => p.prov_code === selectedProvCode) || null}
+                  onChange={(_, v) => {
+                    handleProvinceChange(v?.prov_code || '')
+                    setFormData(prev => ({ ...prev, province: v ? toTitleCase(v.name) : '', city: '', barangay: '' }))
+                  }}
+                  disabled={isAddressDisabled}
+                  renderInput={(params) => <TextField {...params} label='Province *' />}
+                />
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <TextField fullWidth label='City / Municipality' name='city' value={formData.city} onChange={handleChange} required disabled={isAddressDisabled} />
+              {/* --- City / Municipality Dropdown --- */}
+              <Grid item xs={12} sm={4}>
+                <Autocomplete
+                  options={cities}
+                  getOptionLabel={(o) => toTitleCase(o.name)}
+                  value={cities.find(c => c.mun_code === selectedMunCode) || null}
+                  onChange={(_, v) => {
+                    handleCityChange(v?.mun_code || '')
+                    setFormData(prev => ({ ...prev, city: v ? toTitleCase(v.name) : '', barangay: '' }))
+                  }}
+                  disabled={isAddressDisabled || !selectedProvCode}
+                  renderInput={(params) => <TextField {...params} label='City / Municipality *' />}
+                />
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <TextField fullWidth label='Province' name='province' value={formData.province} onChange={handleChange} required disabled={isAddressDisabled} />
+              {/* --- Barangay Dropdown --- */}
+              <Grid item xs={12} sm={4}>
+                <Autocomplete
+                  options={barangays}
+                  getOptionLabel={(o) => o.name}
+                  value={barangays.find(b => b.name === formData.barangay) || (formData.barangay ? { name: formData.barangay, mun_code: selectedMunCode } : null)}
+                  onChange={(_, v) => setFormData(prev => ({ ...prev, barangay: v?.name || '' }))}
+                  disabled={isAddressDisabled || !selectedMunCode}
+                  renderInput={(params) => <TextField {...params} label='Barangay *' />}
+                />
               </Grid>
-              <Grid item xs={12} sm={3}>
+              {/* --- Postal Code & Country --- */}
+              <Grid item xs={12} sm={6}>
                 <TextField fullWidth label='Postal Code' name='postalCode' value={formData.postalCode} onChange={handleChange} disabled={isAddressDisabled} />
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={6}>
                 <TextField fullWidth label='Country' name='country' value={formData.country} onChange={handleChange} required disabled={isAddressDisabled} />
               </Grid>
 
