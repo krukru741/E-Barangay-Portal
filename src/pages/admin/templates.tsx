@@ -177,7 +177,7 @@ const TemplatesPage = () => {
         </DialogTitle>
         <DialogContent>
           <Alert severity='info' sx={{ mb: 2 }}>
-            Gamiton ang mga placeholder: {'{{residentName}}, {{address}}, {{date}}, {{purpose}}, {{barangayName}}, {{captainName}}, {{age}}, {{civilStatus}}'}
+            Gamiton ang mga placeholder: {'{{fullName}}, {{address}}, {{date}}, {{purpose}}, {{barangayName}}, {{cityMunicipality}}, {{province}}, {{captainName}}, {{qrCode}}, {{orNumber}}, {{feeAmount}}, {{age}}, {{civilStatus}}'}
           </Alert>
           <textarea
             value={editContent}

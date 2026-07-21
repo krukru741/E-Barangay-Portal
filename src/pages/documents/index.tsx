@@ -137,9 +137,17 @@ export default function DocumentsPage() {
                         </Select>
                       </FormControl>
                     </TableCell>
-                    <TableCell align='right'>
+                    <TableCell align='right' sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                       <Button size='small' variant='outlined' onClick={() => router.push(`/documents/print/${doc.id}`)}>
-                        Print
+                        Preview
+                      </Button>
+                      <Button 
+                        size='small' 
+                        variant='contained' 
+                        color='primary'
+                        onClick={() => window.open(`/api/documents/${doc.id}/generate-pdf`, '_blank')}
+                      >
+                        PDF
                       </Button>
                     </TableCell>
                   </TableRow>
