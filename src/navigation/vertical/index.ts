@@ -6,6 +6,7 @@ import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import AccountGroupOutline from 'mdi-material-ui/AccountGroupOutline'
 import FileDocumentOutline from 'mdi-material-ui/FileDocumentOutline'
+import ClipboardCheckOutline from 'mdi-material-ui/ClipboardCheckOutline'
 import LockOutline from 'mdi-material-ui/LockOutline'
 import BullhornOutline from 'mdi-material-ui/BullhornOutline'
 import ChartPie from 'mdi-material-ui/ChartPie'
@@ -21,48 +22,89 @@ import DatabaseExportOutline from 'mdi-material-ui/DatabaseExportOutline'
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
 
-const navigation = (): VerticalNavItemsType => {
-  return [
+// Role-based access matrix
+// SUPER_ADMIN: everything
+// ADMIN: everything except Backup & Restore, User Roles (SUPER_ADMIN only)
+// STAFF: Residents, Documents, Blotter, Announcements, Officials, Transparency, Dashboard, Account Settings
+// OFFICIAL: Dashboard, Announcements, Officials, Transparency, Account Settings
+// RESIDENT: Dashboard, Announcements, Transparency, Officials, Account Settings
+
+const navigation = (role: string = 'RESIDENT'): VerticalNavItemsType => {
+  const isSuperAdmin = role === 'SUPER_ADMIN'
+  const isAdmin = role === 'ADMIN' || isSuperAdmin
+  const isStaff = role === 'STAFF' || isAdmin
+  const isOfficial = role === 'OFFICIAL' || isStaff
+  // All roles get these base items
+
+  const items: VerticalNavItemsType = [
     {
       title: 'Dashboard',
       icon: HomeOutline,
       path: '/'
     },
-    {
-      title: 'Residents',
-      icon: AccountGroupOutline,
-      path: '/residents'
-    },
-    {
-      title: 'Document Requests',
-      icon: FileDocumentOutline,
-      path: '/documents'
-    },
-    {
-      title: 'Release Log',
-      icon: FileDocumentOutline, // Reusing icon for now
-      path: '/documents/release-log'
-    },
-    {
-      title: 'Blotter Records',
-      icon: LockOutline,
-      path: '/blotter'
-    },
-    {
-      title: 'Announcements',
-      icon: BullhornOutline,
-      path: '/announcements'
-    },
-    {
-      title: 'Analytics & Reports',
-      icon: ChartPie,
-      path: '/analytics'
-    },
-    {
-      title: 'Finance Mgmt',
-      icon: Finance,
-      path: '/finance'
-    },
+  ]
+
+  // Staff and above
+  if (isStaff) {
+    items.push(
+      {
+        title: 'Residents',
+        icon: AccountGroupOutline,
+        path: '/residents'
+      },
+      {
+        title: 'Document Requests',
+        icon: FileDocumentOutline,
+        path: '/documents'
+      },
+      {
+        title: 'Release Log',
+        icon: ClipboardCheckOutline,
+        path: '/documents/release-log'
+      },
+      {
+        title: 'Blotter Records',
+        icon: LockOutline,
+        path: '/blotter'
+      },
+    )
+  }
+
+  // Official and above
+  if (isOfficial) {
+    items.push(
+      {
+        title: 'Announcements',
+        icon: BullhornOutline,
+        path: '/announcements'
+      },
+    )
+  }
+
+  // Staff and above get Analytics
+  if (isStaff) {
+    items.push(
+      {
+        title: 'Analytics & Reports',
+        icon: ChartPie,
+        path: '/analytics'
+      },
+    )
+  }
+
+  // Admin and above get Finance Management
+  if (isAdmin) {
+    items.push(
+      {
+        title: 'Finance Mgmt',
+        icon: Finance,
+        path: '/finance'
+      },
+    )
+  }
+
+  // All roles can see Transparency Board (public info) and Officials
+  items.push(
     {
       title: 'Transparency Board',
       icon: ScaleBalance,
@@ -73,61 +115,55 @@ const navigation = (): VerticalNavItemsType => {
       icon: AccountTieOutline,
       path: '/officials'
     },
-    {
-      sectionTitle: 'Admin Settings'
-    },
-    {
-      title: 'User Roles',
-      icon: ShieldAccountOutline,
-      path: '/admin/users'
-    },
-    {
-      title: 'Audit Logs',
-      icon: History,
-      path: '/admin/audit-logs'
-    },
-    {
-      title: 'System Settings',
-      icon: CogOutline,
-      path: '/admin/settings'
-    },
-    {
-      title: 'Doc Templates',
-      icon: FileCodeOutline,
-      path: '/admin/templates'
-    },
-    {
-      title: 'Backup & Restore',
-      icon: DatabaseExportOutline,
-      path: '/admin/backup'
-    },
-    {
-      title: 'Account Settings',
-      icon: AccountCogOutline,
-      path: '/account-settings'
-    },
-    {
-      sectionTitle: 'Auth Pages'
-    },
-    {
-      title: 'Login',
-      icon: Login,
-      path: '/pages/login',
-      openInNewTab: false
-    },
-    {
-      title: 'Register',
-      icon: AccountPlusOutline,
-      path: '/pages/register',
-      openInNewTab: false
-    },
-    {
-      title: 'Error',
-      icon: AlertCircleOutline,
-      path: '/pages/error',
-      openInNewTab: true
+  )
+
+  // Admin Settings section — Admin and above
+  if (isAdmin) {
+    items.push({ sectionTitle: 'Admin Settings' } as any)
+
+    if (isSuperAdmin) {
+      items.push({
+        title: 'User Roles',
+        icon: ShieldAccountOutline,
+        path: '/admin/users'
+      })
     }
-  ]
+
+    items.push(
+      {
+        title: 'Audit Logs',
+        icon: History,
+        path: '/admin/audit-logs'
+      },
+      {
+        title: 'System Settings',
+        icon: CogOutline,
+        path: '/admin/settings'
+      },
+      {
+        title: 'Doc Templates',
+        icon: FileCodeOutline,
+        path: '/admin/templates'
+      },
+    )
+
+    if (isSuperAdmin) {
+      items.push({
+        title: 'Backup & Restore',
+        icon: DatabaseExportOutline,
+        path: '/admin/backup'
+      })
+    }
+  }
+
+  // Account Settings — all roles
+  items.push({
+    title: 'Account Settings',
+    icon: AccountCogOutline,
+    path: '/account-settings'
+  })
+
+  return items
 }
 
 export default navigation

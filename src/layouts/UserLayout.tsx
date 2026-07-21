@@ -1,5 +1,6 @@
 // ** React Imports
 import { ReactNode } from 'react'
+import { useSession } from 'next-auth/react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -26,6 +27,8 @@ interface Props {
 const UserLayout = ({ children }: Props) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
+  const { data: session } = useSession()
+  const userRole = (session?.user as any)?.role || 'RESIDENT'
 
   /**
    *  The below variable will hide the current layout menu at given screen size.
@@ -42,7 +45,7 @@ const UserLayout = ({ children }: Props) => {
       hidden={hidden}
       settings={settings}
       saveSettings={saveSettings}
-      verticalNavItems={VerticalNavItems()} // Navigation Items
+      verticalNavItems={VerticalNavItems(userRole)} // Navigation Items
       verticalAppBarContent={(
         props // AppBar Content
       ) => (
