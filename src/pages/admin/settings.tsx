@@ -70,8 +70,32 @@ const AdminSettingsPage = () => {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onloadend = () => {
-        setSettings(prev => ({ ...prev, [field]: reader.result as string }))
+      reader.onload = (event) => {
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const MAX_SIZE = 600
+          let width = img.width
+          let height = img.height
+
+          if (width > height && width > MAX_SIZE) {
+            height = Math.round((height * MAX_SIZE) / width)
+            width = MAX_SIZE
+          } else if (height > width && height > MAX_SIZE) {
+            width = Math.round((width * MAX_SIZE) / height)
+            height = MAX_SIZE
+          }
+
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')
+          ctx?.drawImage(img, 0, 0, width, height)
+          
+          // Compress to JPEG with 80% quality (reduces size from MBs to KBs)
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
+          setSettings(prev => ({ ...prev, [field]: dataUrl }))
+        }
+        img.src = event.target?.result as string
       }
       reader.readAsDataURL(file)
     }
