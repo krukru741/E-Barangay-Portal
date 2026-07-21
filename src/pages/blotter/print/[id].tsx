@@ -17,19 +17,17 @@ export default function BlotterPrintView() {
 
   useEffect(() => {
     if (id) {
-      fetch(`/api/blotters/${id}`)
-        .then(res => res.json())
-        .then(data => setBlotter(data))
-      
-      fetch('/api/officials')
-        .then(res => res.json())
-        .then(data => setOfficials(Array.isArray(data) ? data : []))
-        
-      fetch('/api/admin/settings')
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.id) setSettings(data)
-        })
+      Promise.all([
+        fetch(`/api/blotters/${id}`).then(res => res.json()),
+        fetch('/api/officials').then(res => res.json()),
+        fetch('/api/admin/settings').then(res => res.ok ? res.json() : null).catch(() => null)
+      ]).then(([blotterData, offsData, settData]) => {
+        setBlotter(blotterData)
+        setOfficials(Array.isArray(offsData) ? offsData : [])
+        if (settData && settData.id) {
+          setSettings(settData)
+        }
+      })
     }
   }, [id])
 
@@ -218,6 +216,23 @@ export default function BlotterPrintView() {
             </Typography>
           </Box>
 
+          {/* Hearings */}
+          {blotter.hearings && blotter.hearings.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ fontWeight: 'bold', textDecoration: 'underline', mb: 0.5 }}>Hearings & Mediation:</Typography>
+              {blotter.hearings.map((h: any, i: number) => (
+                <Box key={h.id} sx={{ mb: 1, pl: 2 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    Hearing {blotter.hearings.length - i} - {new Date(h.scheduledAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                  </Typography>
+                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                    Outcome: {h.outcome || 'Pending'}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
+
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
             <Box sx={{ textAlign: 'center', width: '250px' }}>
               <Typography sx={{ borderBottom: '1px solid black', height: '20px' }}></Typography>
@@ -243,7 +258,7 @@ export default function BlotterPrintView() {
               <Typography variant="body2">Referred to PNP/Court</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox size="small" checked={['OPEN', 'MEDIATION'].includes(blotter.status)} sx={{ p: 0, mr: 0.5, '&.Mui-checked': { color: 'black' } }} />
+              <Checkbox size="small" checked={['OPEN', 'ONGOING'].includes(blotter.status)} sx={{ p: 0, mr: 0.5, '&.Mui-checked': { color: 'black' } }} />
               <Typography variant="body2">Ongoing Investigation</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>

@@ -29,15 +29,15 @@ export async function createBlotter(data: BlotterInput, userRole: UserRole) {
   return await createBlotterRecord(data)
 }
 
-export async function changeBlotterStatus(id: string, status: BlotterStatus, userRole: UserRole) {
+export async function changeBlotterStatus(id: string, status: BlotterStatus, userRole: UserRole, actionTaken?: string) {
   checkAdminOrStaffRole(userRole)
-  return await updateBlotterStatus(id, status)
+  return await updateBlotterStatus(id, status, actionTaken)
 }
 
 export async function addHearing(blotterId: string, data: HearingInput, userRole: UserRole) {
   checkAdminOrStaffRole(userRole)
   // If a hearing is added, the status might automatically become MEDIATION
-  await updateBlotterStatus(blotterId, BlotterStatus.MEDIATION)
+  await updateBlotterStatus(blotterId, BlotterStatus.ONGOING)
   return await addHearingToBlotter(blotterId, data)
 }
 

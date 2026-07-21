@@ -15,7 +15,7 @@ import Link from 'next/link'
 
 const statusColorMap: any = {
   OPEN: 'warning',
-  MEDIATION: 'info',
+  ONGOING: 'info',
   RESOLVED: 'success',
   ESCALATED: 'error',
   CLOSED: 'default'

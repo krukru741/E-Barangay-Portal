@@ -48,13 +48,19 @@ export async function createBlotterRecord(data: BlotterInput) {
   })
 }
 
-export async function updateBlotterStatus(id: string, status: BlotterStatus) {
+export async function updateBlotterStatus(id: string, status: BlotterStatus, actionTaken?: string) {
+  const dataToUpdate: any = {
+    status,
+    resolvedAt: status === BlotterStatus.RESOLVED ? new Date() : null
+  }
+  
+  if (actionTaken !== undefined) {
+    dataToUpdate.actionTaken = actionTaken
+  }
+  
   return await prisma.blotter.update({
     where: { id },
-    data: { 
-      status,
-      resolvedAt: status === BlotterStatus.RESOLVED ? new Date() : null 
-    }
+    data: dataToUpdate
   })
 }
 

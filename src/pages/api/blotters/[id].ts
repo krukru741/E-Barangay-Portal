@@ -24,9 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === 'PATCH') {
-      const { status } = req.body
+      const { status, actionTaken } = req.body
       if (!status) return res.status(400).json({ error: 'Status is required' })
-      const updatedBlotter = await changeBlotterStatus(id, status as BlotterStatus, userRole)
+      const updatedBlotter = await changeBlotterStatus(id, status as BlotterStatus, userRole, actionTaken)
       return res.status(200).json(updatedBlotter)
     }
 

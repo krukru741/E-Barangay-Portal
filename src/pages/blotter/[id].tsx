@@ -14,7 +14,7 @@ import Box from '@mui/material/Box'
 
 const statusColorMap: any = {
   OPEN: 'warning',
-  MEDIATION: 'info',
+  ONGOING: 'info',
   RESOLVED: 'success',
   ESCALATED: 'error',
   CLOSED: 'default'
@@ -28,6 +28,7 @@ const BlotterDetailsPage = () => {
   
   // Status Update State
   const [status, setStatus] = useState('')
+  const [actionTaken, setActionTaken] = useState('')
 
   // Hearing State
   const [hearingDate, setHearingDate] = useState('')
@@ -40,6 +41,7 @@ const BlotterDetailsPage = () => {
       .then(data => {
         setBlotter(data)
         setStatus(data.status)
+        setActionTaken(data.actionTaken || '')
         setLoading(false)
       })
       .catch(console.error)
@@ -53,7 +55,7 @@ const BlotterDetailsPage = () => {
     await fetch(`/api/blotters/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status })
+      body: JSON.stringify({ status, actionTaken })
     })
     fetchBlotter()
   }
@@ -183,11 +185,21 @@ const BlotterDetailsPage = () => {
             <Typography variant="subtitle2" sx={{ mb: 2 }}>Update Status</Typography>
             <TextField select fullWidth value={status} onChange={(e) => setStatus(e.target.value)} sx={{ mb: 4 }}>
               <MenuItem value="OPEN">Open</MenuItem>
-              <MenuItem value="MEDIATION">Mediation</MenuItem>
+              <MenuItem value="ONGOING">Ongoing Investigation</MenuItem>
               <MenuItem value="RESOLVED">Resolved</MenuItem>
               <MenuItem value="ESCALATED">Escalated (MTC)</MenuItem>
               <MenuItem value="CLOSED">Closed</MenuItem>
             </TextField>
+            <TextField 
+              label="Action Taken" 
+              fullWidth 
+              multiline 
+              rows={3} 
+              value={actionTaken} 
+              onChange={(e) => setActionTaken(e.target.value)} 
+              sx={{ mb: 4 }} 
+              placeholder="Record any actions taken..."
+            />
             <Button fullWidth variant="contained" onClick={handleUpdateStatus}>
               Save Status
             </Button>
