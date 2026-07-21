@@ -3,6 +3,10 @@ import { ResidentInput } from 'src/lib/validations/resident.schema'
 
 export async function findAllResidents() {
   return await prisma.resident.findMany({
+    where: {
+      isMerged: false,
+      deletedAt: null
+    },
     orderBy: { createdAt: 'desc' },
     include: {
       household: {
@@ -29,6 +33,8 @@ export async function findResidentByExactMatch(firstName: string, lastName: stri
       birthDate: {
         equals: birthDate,
       },
+      isMerged: false,
+      deletedAt: null
     }
   })
 }
