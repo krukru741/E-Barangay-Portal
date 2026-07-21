@@ -60,9 +60,12 @@ const AdminSettingsPage = () => {
     }
   }, [session, role, router])
 
+  const [error, setError] = useState('')
+
   const handleSave = async () => {
     setSaving(true)
     setSuccess(false)
+    setError('')
     try {
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
@@ -72,9 +75,14 @@ const AdminSettingsPage = () => {
       if (res.ok) {
         setSuccess(true)
         setTimeout(() => setSuccess(false), 4000)
+      } else {
+        const errorData = await res.json()
+        setError(errorData.error || 'Failed to save settings')
+        console.error('Save failed:', errorData)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
+      setError(err.message || 'Network error occurred')
     }
     setSaving(false)
   }
@@ -109,6 +117,12 @@ const AdminSettingsPage = () => {
       {success && (
         <Grid item xs={12}>
           <Alert severity='success'>Settings saved successfully! Changes will reflect on the portal.</Alert>
+        </Grid>
+      )}
+
+      {error && (
+        <Grid item xs={12}>
+          <Alert severity='error'>{error}</Alert>
         </Grid>
       )}
 

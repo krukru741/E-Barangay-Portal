@@ -17,7 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Protect PUT route (only admin can change settings)
     const session = await getServerSession(req, res, authOptions)
     if (!session || !['SUPER_ADMIN', 'ADMIN'].includes((session.user as any)?.role)) {
-      return res.status(401).json({ error: 'Unauthorized' })
+      console.log('Unauthorized attempt:', session)
+      return res.status(401).json({ error: 'Unauthorized', session })
     }
 
     if (req.method === 'PUT') {
