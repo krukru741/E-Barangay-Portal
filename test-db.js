@@ -1,21 +1,13 @@
 const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'],
-  datasources: {
-    db: {
-      url: "postgresql://postgres.urhzfsulwkxvspuivqfn:E-barangay2026@aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connect_timeout=60"
-    }
-  }
-})
+const prisma = new PrismaClient()
 
 async function main() {
-  console.log('Testing connection to DB using Transaction Pooler...')
   try {
-    const budgets = await prisma.budget.findMany()
-    console.log('SUCCESS! Budgets found:', budgets.length)
+    const res = await prisma.$queryRaw`SELECT 1 as result`
+    console.log("Connection successful:", res)
   } catch (err) {
-    console.error('ERROR connecting:', err.message)
+    console.error("Connection failed:", err)
   } finally {
     await prisma.$disconnect()
   }
