@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import puppeteer from 'puppeteer'
 import QRCode from 'qrcode'
 import { PrismaClient } from '@prisma/client'
-import { DEFAULT_TEMPLATES } from '../admin/templates'
+import { DEFAULT_TEMPLATES } from '../../admin/templates'
 
 const prisma = new PrismaClient()
 
