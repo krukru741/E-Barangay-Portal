@@ -25,7 +25,7 @@ export default function AuditLogsPage() {
   const [logs, setLogs] = useState<any[]>([])
 
   useEffect(() => {
-    if (session && role !== 'SUPER_ADMIN') {
+    if (session && !['SUPER_ADMIN', 'ADMIN'].includes(role)) {
       router.replace('/')
     } else if (session) {
       fetchLogs()
