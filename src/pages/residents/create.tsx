@@ -150,6 +150,15 @@ export default function CreateResident() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const hasStreet = formData.street && formData.street.trim().length > 0;
+    const hasSitio = formData.sitio && formData.sitio.trim().length > 0;
+    const hasPurok = formData.purok && formData.purok.trim().length > 0;
+    if (!hasStreet && !hasSitio && !hasPurok) {
+      alert("Please provide at least a Street Name, Sitio, OR Purok");
+      return;
+    }
+
     setLoading(true)
 
     try {
@@ -378,18 +387,18 @@ export default function CreateResident() {
                 <TextField fullWidth label='House Number' name='houseNumber' placeholder='e.g. 123' value={formData.houseNumber} onChange={handleChange} disabled={isAddressDisabled} />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <TextField fullWidth label='Street Name' name='street' value={formData.street} onChange={handleChange} required disabled={isAddressDisabled} />
+                <TextField fullWidth label='Street Name' name='street' value={formData.street} onChange={handleChange} disabled={isAddressDisabled} />
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField fullWidth label='Village / Subdivision / Phase' name='village' value={formData.village} onChange={handleChange} disabled={isAddressDisabled} inputProps={{ sx: { textTransform: 'capitalize' } }} />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <TextField fullWidth label='Sitio (Optional)' name='sitio' value={formData.sitio} onChange={handleChange} disabled={isAddressDisabled} inputProps={{ sx: { textTransform: 'capitalize' } }} />
+                <TextField fullWidth label='Sitio' name='sitio' value={formData.sitio} onChange={handleChange} disabled={isAddressDisabled} inputProps={{ sx: { textTransform: 'capitalize' } }} />
               </Grid>
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth disabled={isAddressDisabled}>
-                  <InputLabel>Purok (Optional)</InputLabel>
-                  <Select label='Purok (Optional)' name='purok' value={formData.purok} onChange={handleChange}>
+                  <InputLabel>Purok</InputLabel>
+                  <Select label='Purok' name='purok' value={formData.purok} onChange={handleChange}>
                     <MenuItem value=''><em>None</em></MenuItem>
                     <MenuItem value='1'>Purok 1</MenuItem>
                     <MenuItem value='2'>Purok 2</MenuItem>

@@ -29,7 +29,7 @@ export const residentSchema = z.object({
   
   // Address / Household fields
   houseNumber: z.string().optional(),
-  street: z.string().min(1, "Street is required"),
+  street: z.string().optional().default(''), // Allow empty string to satisfy DB schema
   village: z.string().optional(),
   sitio: z.string().optional(),
   purok: z.string().optional(),
@@ -38,6 +38,29 @@ export const residentSchema = z.object({
   province: z.string().default('Cebu'),
   postalCode: z.string().optional(),
   country: z.string().default('Philippines'),
+}).superRefine((data, ctx) => {
+  // Ensure at least one of Street, Sitio, or Purok is provided
+  const hasStreet = data.street && data.street.trim().length > 0;
+  const hasSitio = data.sitio && data.sitio.trim().length > 0;
+  const hasPurok = data.purok && data.purok.trim().length > 0;
+  
+  if (!hasStreet && !hasSitio && !hasPurok) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Please provide at least a Street Name, Sitio, OR Purok",
+      path: ["street"], // Attach error to street field
+    });
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Required",
+      path: ["sitio"],
+    });
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Required",
+      path: ["purok"],
+    });
+  }
 })
 
 export type ResidentInput = z.infer<typeof residentSchema>
