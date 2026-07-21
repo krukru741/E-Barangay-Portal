@@ -142,7 +142,7 @@ export default function DocumentPrintView() {
         height: '500px',
       }}>
         {settings.watermarkUrl ? (
-          <img src={settings.watermarkUrl} alt="Watermark" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <img src={settings.watermarkUrl} alt="Watermark" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
         ) : (
           <Box sx={{
             display: 'flex',
@@ -167,7 +167,7 @@ export default function DocumentPrintView() {
         </Box>
 
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, pb: 2, gap: 5 }}>
         {/* Left Logo */}
         <Box sx={{ width: 100, height: 100, borderRadius: '50%', border: settings.logoUrl ? 'none' : '1px solid black', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
           {settings.logoUrl ? (
@@ -178,7 +178,7 @@ export default function DocumentPrintView() {
         </Box>
         
         {/* Center Text */}
-        <Box sx={{ textAlign: 'center', flex: 1, px: 2 }}>
+        <Box sx={{ textAlign: 'center', px: 2 }}>
           <Typography variant="body1">Republic of the Philippines</Typography>
           <Typography variant="body1">Province of {settings.province}</Typography>
           <Typography variant="body1" sx={{ textTransform: 'uppercase' }}>{settings.cityMunicipality}</Typography>
