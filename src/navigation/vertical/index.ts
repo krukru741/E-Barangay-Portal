@@ -14,6 +14,9 @@ import ScaleBalance from 'mdi-material-ui/ScaleBalance'
 import AccountTieOutline from 'mdi-material-ui/AccountTieOutline'
 import ShieldAccountOutline from 'mdi-material-ui/ShieldAccountOutline'
 import History from 'mdi-material-ui/History'
+import CogOutline from 'mdi-material-ui/CogOutline'
+import FileCodeOutline from 'mdi-material-ui/FileCodeOutline'
+import DatabaseExportOutline from 'mdi-material-ui/DatabaseExportOutline'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -82,6 +85,21 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Audit Logs',
       icon: History,
       path: '/admin/audit-logs'
+    },
+    {
+      title: 'System Settings',
+      icon: CogOutline,
+      path: '/admin/settings'
+    },
+    {
+      title: 'Doc Templates',
+      icon: FileCodeOutline,
+      path: '/admin/templates'
+    },
+    {
+      title: 'Backup & Restore',
+      icon: DatabaseExportOutline,
+      path: '/admin/backup'
     },
     {
       title: 'Account Settings',

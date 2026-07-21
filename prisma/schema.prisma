@@ -180,6 +180,25 @@ model AuditLog {
   createdAt   DateTime  @default(now())
 }
 
+model SystemSettings {
+  id               String   @id @default(cuid())
+  barangayName     String   @default("Barangay San Jose")
+  cityMunicipality String   @default("Talisay City")
+  province         String   @default("Cebu")
+  contactNumber    String?
+  email            String?
+  logoUrl          String?
+  updatedAt        DateTime @updatedAt
+}
+
+model DocumentTemplate {
+  id              String       @id @default(cuid())
+  type            DocumentType @unique
+  contentHtml     String       @db.Text
+  updatedAt       DateTime     @updatedAt
+}
+
+
 // Enums
 enum Gender {
   MALE
