@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
 import { prisma } from 'src/lib/db'
 
-const DEFAULT_TEMPLATES: Record<string, string> = {
+export const DEFAULT_TEMPLATES: Record<string, string> = {
   CLEARANCE: `<div style="font-family: Arial, sans-serif; padding: 40px;">
   <div style="text-align: center; margin-bottom: 20px;">
     <h2>BARANGAY CLEARANCE</h2>

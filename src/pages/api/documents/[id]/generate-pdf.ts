@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import puppeteer from 'puppeteer'
 import QRCode from 'qrcode'
 import { PrismaClient } from '@prisma/client'
+import { DEFAULT_TEMPLATES } from '../admin/templates'
 
 const prisma = new PrismaClient()
 
@@ -32,7 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { type: document.type }
     })
 
-    if (!template) {
+    let html = template ? template.contentHtml : DEFAULT_TEMPLATES[document.type]
+
+    if (!html) {
       return res.status(404).json({ message: 'Template not found for this document type' })
     }
 
@@ -43,8 +46,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       include: { resident: true }
     })
     const captain = officials.find(o => o.position === 'CAPTAIN')
-
-    let html = template.contentHtml
 
     // Variables replacement
     const fullName = `${document.resident.firstName} ${document.resident.middleName ? document.resident.middleName + ' ' : ''}${document.resident.lastName}`.trim().toUpperCase()
