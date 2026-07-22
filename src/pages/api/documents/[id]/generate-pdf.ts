@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await browser.close()
 
     res.setHeader('Content-Type', 'application/pdf')
-    res.setHeader('Content-Disposition', `attachment; filename="document-${id}.pdf"`)
+    res.setHeader('Content-Disposition', `inline; filename="document-${id}.pdf"`)
     res.send(Buffer.from(pdfBuffer))
 
   } catch (error: any) {
