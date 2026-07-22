@@ -16,6 +16,7 @@ import InformationOutline from 'mdi-material-ui/InformationOutline'
 
 const BackupPage = () => {
   const { data: session } = useSession()
+  const router = useRouter()
   const [downloading, setDownloading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -149,15 +150,31 @@ const BackupPage = () => {
           <CardContent>
             <Grid container spacing={2}>
               {[
-                { label: 'Residents', desc: 'All registered residents and household info' },
-                { label: 'Documents', desc: 'All document requests and their status' },
-                { label: 'Blotter Cases', desc: 'All blotter entries and hearing schedules' },
-                { label: 'Officials', desc: 'All registered barangay officials' },
-                { label: 'Announcements', desc: 'All posted announcements and bulletins' },
-                { label: 'Finance', desc: 'Budget records and expenditure logs' },
+                { label: 'Residents', desc: 'All registered residents and household info', link: '/residents' },
+                { label: 'Documents', desc: 'All document requests and their status', link: '/documents' },
+                { label: 'Blotter Cases', desc: 'All blotter entries and hearing schedules', link: '/blotter' },
+                { label: 'Officials', desc: 'All registered barangay officials', link: '/officials' },
+                { label: 'Announcements', desc: 'All posted announcements and bulletins', link: '/announcements' },
+                { label: 'Finance', desc: 'Budget records and expenditure logs', link: '/finance' },
               ].map(item => (
                 <Grid item xs={12} md={4} key={item.label}>
-                  <Box sx={{ p: 2, borderRadius: 2, backgroundColor: '#f5f7fa', border: '1px solid #e0e0e0' }}>
+                  <Box 
+                    onClick={() => router.push(item.link)}
+                    sx={{ 
+                      p: 2, 
+                      borderRadius: 2, 
+                      backgroundColor: '#f5f7fa', 
+                      border: '1px solid #e0e0e0',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        backgroundColor: '#e3f2fd',
+                        borderColor: '#90caf9',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
+                      }
+                    }}
+                  >
                     <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>✅ {item.label}</Typography>
                     <Typography variant='body2' color='textSecondary'>{item.desc}</Typography>
                   </Box>
