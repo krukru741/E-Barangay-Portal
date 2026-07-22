@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, MouseEvent, ReactNode, useState } from 'react'
+import { ChangeEvent, MouseEvent, ReactNode, useState, useEffect } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -74,10 +74,22 @@ const LoginPage = () => {
   })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
 
   // ** Hook
   const theme = useTheme()
   const router = useRouter()
+
+  useEffect(() => {
+    fetch('/api/admin/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.logoUrl) {
+          setLogoUrl(data.logoUrl)
+        }
+      })
+      .catch(err => console.error('Error fetching settings:', err))
+  }, [])
 
   const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
@@ -114,11 +126,13 @@ const LoginPage = () => {
     <Box className='content-center'>
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
-          <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box sx={{ mb: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            {logoUrl ? (
+              <img src={logoUrl} alt='Barangay Logo' style={{ width: 80, height: 80, marginBottom: 16, objectFit: 'cover', borderRadius: '50%', border: '2px solid #e0e0e0' }} />
+            ) : null}
             <Typography
               variant='h6'
               sx={{
-                ml: 3,
                 lineHeight: 1,
                 fontWeight: 600,
                 textTransform: 'uppercase',
