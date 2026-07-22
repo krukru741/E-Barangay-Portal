@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Set viewport to a good print size
     await page.setViewport({ width: 1200, height: 1600 })
     
-    await page.goto(url, { waitUntil: 'networkidle0' })
+    await page.goto(url, { waitUntil: 'domcontentloaded' })
     
     // Wait for the React component to finish loading and fetching data
     await page.waitForSelector('#print-ready', { timeout: 15000 })
