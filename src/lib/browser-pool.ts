@@ -32,12 +32,13 @@ async function launchBrowser(): Promise<Browser> {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',    // Prevents crashes in low-memory environments
-      '--disable-gpu',               // Not needed for PDF generation
+      '--disable-dev-shm-usage', // Prevents /dev/shm crashes in low-memory envs
+      '--disable-gpu',           // Not needed for PDF generation
       '--disable-extensions',
       '--no-first-run',
-      '--no-zygote',
-      '--single-process',            // Reduces memory usage significantly
+      // NOTE: --single-process and --no-zygote are intentionally EXCLUDED.
+      // --single-process causes 'Target closed' crashes on Windows because
+      // Chromium's IPC breaks in single-process mode on this platform.
     ],
   })
 
@@ -93,26 +94,19 @@ export async function withPage<T>(fn: (page: import('puppeteer').Page) => Promis
   const page = await browser.newPage()
 
   try {
-    // Intercept and block heavy resources that are not needed for PDF generation.
-    // This alone can shave 1–3 seconds off pages that load fonts/images from CDNs.
-    await page.setRequestInterception(true)
-    page.on('request', (request) => {
-      const blockedTypes = ['font', 'media'] as const
-      const blockedDomains = ['google-analytics.com', 'googletagmanager.com']
-
-      if (
-        (blockedTypes as ReadonlyArray<string>).includes(request.resourceType()) ||
-        blockedDomains.some(d => request.url().includes(d))
-      ) {
-        request.abort()
-      } else {
-        request.continue()
-      }
-    })
+    // NOTE: Request interception is intentionally NOT enabled here.
+    //
+    // Interception was useful when Puppeteer navigated to an external URL
+    // (page.goto) to block CDN fonts/analytics. But with page.setContent(),
+    // Puppeteer internally navigates to about:blank first — enabling interception
+    // interferes with this internal navigation and causes 'Target closed' errors.
+    //
+    // This is safe to omit because our HTML is fully self-contained:
+    // all images are base64 data URIs, CSS is inline, no CDN calls are made.
 
     return await fn(page)
   } finally {
-    // Always close the page so it doesn't accumulate in the browser
-    await page.close().catch(() => {/* ignore close errors */})
+    // Always close the page — browser stays warm for the next request
+    await page.close().catch(() => { /* ignore errors on close */ })
   }
 }
