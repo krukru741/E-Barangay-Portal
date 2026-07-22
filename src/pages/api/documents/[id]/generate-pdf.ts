@@ -23,7 +23,7 @@
 
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]'
+import { authOptions } from '../../auth/[...nextauth]'
 import { withPage } from 'src/lib/browser-pool'
 import { buildDocumentHtml } from 'src/server/services/pdf-template.service'
 
