@@ -41,18 +41,21 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/analytics').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/documents').then(r => r.json()).catch(() => []),
-      fetch('/api/blotters').then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('/api/announcements').then(r => r.json()).catch(() => []),
-    ]).then(([analyticsData, docs, blotters, anncs]) => {
-      if (analyticsData) setStats(analyticsData.summary)
-      setRecentDocs(Array.isArray(docs) ? docs.slice(0, 5) : [])
-      setRecentBlotters(Array.isArray(blotters) ? blotters.slice(0, 5) : [])
-      setAnnouncements(Array.isArray(anncs) ? anncs.slice(0, 3) : [])
-      setLoading(false)
-    })
+    // Single API call that returns all dashboard data pre-aggregated.
+    // Previously: 4 separate fetches that over-fetched ALL records.
+    fetch('/api/dashboard')
+      .then(r => r.ok ? r.json() : Promise.reject(r))
+      .then(data => {
+        setStats(data.summary)
+        setRecentDocs(data.recentDocuments || [])
+        setRecentBlotters(data.recentBlotters || [])
+        setAnnouncements(data.latestAnnouncements || [])
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Dashboard fetch error:', err)
+        setLoading(false)
+      })
   }, [])
 
   const userName = (session?.user as any)?.name || 'User'

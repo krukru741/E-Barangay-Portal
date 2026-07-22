@@ -5,8 +5,9 @@ import { documentRequestSchema } from 'src/lib/validations/document.schema'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const documents = await getDocumentRequests()
-      return res.status(200).json(documents)
+      const page = parseInt((req.query.page as string) || '1', 10)
+      const result = await getDocumentRequests(page)
+      return res.status(200).json(result)
     } catch (error) {
       console.error('Error fetching document requests:', error)
       return res.status(500).json({ message: 'Error fetching document requests' })

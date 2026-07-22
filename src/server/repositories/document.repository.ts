@@ -1,13 +1,52 @@
 import { prisma } from 'src/lib/db'
 import { DocumentRequestInput } from 'src/lib/validations/document.schema'
 
-export async function findAllDocumentRequests() {
+const PAGE_SIZE = 50
+
+export async function countDocumentRequests(): Promise<number> {
+  return prisma.documentRequest.count()
+}
+
+export async function findAllDocumentRequests(page = 1) {
+  const skip = (page - 1) * PAGE_SIZE
+
   return await prisma.documentRequest.findMany({
-    include: {
-      resident: true,
-      issuedBy: true
+    take: PAGE_SIZE,
+    skip,
+    // Use select instead of include:{ resident: true } to avoid fetching
+    // the heavy `photo` (base64 blob) and `passwordHash` fields.
+    select: {
+      id: true,
+      queueNumber: true,
+      type: true,
+      purpose: true,
+      status: true,
+      urgency: true,
+      requestedAt: true,
+      releasedAt: true,
+      remarks: true,
+      feeAmount: true,
+      orNumber: true,
+      cedulaNumber: true,
+      businessName: true,
+      resident: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          contactNumber: true,
+        }
+      },
+      issuedBy: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          // passwordHash intentionally excluded
+        }
+      },
     },
-    orderBy: { requestedAt: 'desc' }
+    orderBy: { requestedAt: 'desc' },
   })
 }
 

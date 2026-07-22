@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -12,11 +12,12 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import TableContainer from '@mui/material/TableContainer'
+import TablePagination from '@mui/material/TablePagination'
 import Button from '@mui/material/Button'
-import Chip from '@mui/material/Chip'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const statusColors: any = {
   PENDING: 'warning',
@@ -26,28 +27,36 @@ const statusColors: any = {
   CANCELLED: 'error'
 }
 
+const PAGE_SIZE = 50
+
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<any[]>([])
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(0) // MUI TablePagination is 0-indexed
   const router = useRouter()
 
-  const fetchDocuments = () => {
+  const fetchDocuments = useCallback((currentPage: number) => {
     setLoading(true)
-    fetch('/api/documents')
+    const params = new URLSearchParams({ page: String(currentPage + 1) })
+
+    fetch(`/api/documents?${params.toString()}`)
       .then(res => res.json())
-      .then(data => {
-        setDocuments(data)
+      .then(result => {
+        // API now returns { data, total, page, pageSize }
+        setDocuments(Array.isArray(result.data) ? result.data : [])
+        setTotal(result.total || 0)
         setLoading(false)
       })
       .catch(err => {
         console.error(err)
         setLoading(false)
       })
-  }
+  }, [])
 
   useEffect(() => {
-    fetchDocuments()
-  }, [])
+    fetchDocuments(page)
+  }, [page, fetchDocuments])
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
@@ -57,7 +66,8 @@ export default function DocumentsPage() {
         body: JSON.stringify({ status: newStatus })
       })
       if (res.ok) {
-        fetchDocuments()
+        // Re-fetch the current page after a status change
+        fetchDocuments(page)
       } else {
         console.error('Failed to update status')
       }
@@ -69,9 +79,14 @@ export default function DocumentsPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 5 }}>
-        <Typography variant='h5'>
-          Document Requests
-        </Typography>
+        <Box>
+          <Typography variant='h5'>Document Requests</Typography>
+          {!loading && (
+            <Typography variant='body2' color='textSecondary'>
+              {total.toLocaleString()} total requests
+            </Typography>
+          )}
+        </Box>
         <Link href='/documents/request' passHref>
           <Button variant='contained'>New Request</Button>
         </Link>
@@ -94,11 +109,18 @@ export default function DocumentsPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} align='center'>Loading requests...</TableCell>
+                  <TableCell colSpan={7} align='center' sx={{ py: 6 }}>
+                    <CircularProgress size={28} />
+                    <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
+                      Loading requests...
+                    </Typography>
+                  </TableCell>
                 </TableRow>
               ) : documents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} align='center'>No document requests found.</TableCell>
+                  <TableCell colSpan={7} align='center' sx={{ py: 6 }}>
+                    No document requests found.
+                  </TableCell>
                 </TableRow>
               ) : (
                 documents.map((doc: any) => (
@@ -141,9 +163,9 @@ export default function DocumentsPage() {
                       <Button size='small' variant='outlined' onClick={() => router.push(`/documents/print/${doc.id}`)}>
                         Preview
                       </Button>
-                      <Button 
-                        size='small' 
-                        variant='contained' 
+                      <Button
+                        size='small'
+                        variant='contained'
                         color='primary'
                         onClick={() => window.open(`/api/documents/${doc.id}/generate-pdf`, '_blank')}
                       >
@@ -156,6 +178,19 @@ export default function DocumentsPage() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Server-side Pagination Controls */}
+        <TablePagination
+          component="div"
+          count={total}
+          page={page}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          rowsPerPage={PAGE_SIZE}
+          rowsPerPageOptions={[PAGE_SIZE]}
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}–${to} of ${count !== -1 ? count.toLocaleString() : `more than ${to}`}`
+          }
+        />
       </Card>
     </Box>
   )

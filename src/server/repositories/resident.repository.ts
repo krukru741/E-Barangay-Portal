@@ -1,18 +1,72 @@
 import { prisma } from 'src/lib/db'
 import { ResidentInput } from 'src/lib/validations/resident.schema'
 
-export async function findAllResidents() {
-  return await prisma.resident.findMany({
+const PAGE_SIZE = 50
+
+export async function countResidents(search?: string): Promise<number> {
+  return prisma.resident.count({
     where: {
       isMerged: false,
-      deletedAt: null
+      deletedAt: null,
+      ...(search
+        ? {
+            OR: [
+              { firstName: { contains: search, mode: 'insensitive' } },
+              { lastName: { contains: search, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
     },
-    orderBy: { createdAt: 'desc' },
-    include: {
+  })
+}
+
+export async function findAllResidents(page = 1, search?: string, sortBy?: string) {
+  const skip = (page - 1) * PAGE_SIZE
+
+  // Build orderBy based on sort preference
+  let orderBy: any = { createdAt: 'desc' }
+  if (sortBy === 'alphabetical') {
+    orderBy = [{ firstName: 'asc' }, { lastName: 'asc' }]
+  } else if (sortBy === 'sitio') {
+    orderBy = { household: { sitio: 'asc' } }
+  }
+
+  return await prisma.resident.findMany({
+    take: PAGE_SIZE,
+    skip,
+    where: {
+      isMerged: false,
+      deletedAt: null,
+      // Search is done at the DB level — no more client-side filtering
+      ...(search
+        ? {
+            OR: [
+              { firstName: { contains: search, mode: 'insensitive' } },
+              { lastName: { contains: search, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
+    },
+    orderBy,
+    // Explicit select avoids loading the `photo` base64 blob in list views.
+    // The full photo is loaded separately in the /residents/[id] profile page.
+    select: {
+      id: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      suffix: true,
+      gender: true,
+      civilStatus: true,
+      isSenior: true,
+      isPWD: true,
+      isIndigent: true,
+      isVoter: true,
+      isSoloParent: true,
+      isHeadOfFamily: true,
+      createdAt: true,
       household: {
-        select: {
-          sitio: true
-        }
+        select: { sitio: true }
       }
     }
   })

@@ -1,9 +1,13 @@
-import { findAllResidents, findResidentByExactMatch, createResidentRecord, createHousehold, findResidentById, updateResidentRecord } from '../repositories/resident.repository'
+import { findAllResidents, countResidents, findResidentByExactMatch, createResidentRecord, createHousehold, findResidentById, updateResidentRecord } from '../repositories/resident.repository'
 import { ResidentInput } from 'src/lib/validations/resident.schema'
 import { prisma } from 'src/lib/db'
 
-export async function getResidents() {
-  return await findAllResidents()
+export async function getResidents(page = 1, search?: string, sortBy?: string) {
+  const [data, total] = await Promise.all([
+    findAllResidents(page, search, sortBy),
+    countResidents(search),
+  ])
+  return { data, total, page, pageSize: 50 }
 }
 
 export async function getResidentProfile(id: string) {

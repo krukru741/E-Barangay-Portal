@@ -5,9 +5,13 @@ import { residentSchema } from 'src/lib/validations/resident.schema'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const residents = await getResidents()
+      const page = parseInt((req.query.page as string) || '1', 10)
+      const search = (req.query.search as string) || undefined
+      const sortBy = (req.query.sortBy as string) || undefined
+
+      const result = await getResidents(page, search, sortBy)
       
-      return res.status(200).json(residents)
+      return res.status(200).json(result)
     } catch (error) {
       console.error('Error fetching residents:', error)
       

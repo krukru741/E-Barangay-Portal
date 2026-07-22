@@ -64,6 +64,12 @@ model Resident {
   isMerged        Boolean  @default(false)
   mergedToId      String?
   deletedAt       DateTime?
+
+  // Performance indexes
+  @@index([isMerged, deletedAt])              // Used in every findAllResidents() query
+  @@index([firstName, lastName, birthDate])  // Used in duplicate-check queries
+  @@index([householdId])                     // Foreign key lookups
+  @@index([createdAt])                       // Used in orderBy sorting
 }
 
 model User {
@@ -99,6 +105,11 @@ model DocumentRequest {
   businessName  String?
   businessAddress String?
   urgency       DocumentUrgency @default(REGULAR)
+
+  // Performance indexes
+  @@index([residentId])     // Foreign key — used in every include/join
+  @@index([status])         // Frequently filtered by status
+  @@index([requestedAt])    // Used in orderBy desc
 }
 
 model Blotter {
@@ -120,6 +131,10 @@ model Blotter {
   hearings        Hearing[]
   filedAt         DateTime      @default(now())
   resolvedAt      DateTime?
+
+  // Performance indexes
+  @@index([status])     // Frequently filtered by status
+  @@index([filedAt])    // Used in orderBy desc
 }
 
 model Hearing {
@@ -140,6 +155,9 @@ model Announcement {
   isPinned    Boolean   @default(false)
   publishedAt DateTime  @default(now())
   expiresAt   DateTime?
+
+  // Performance indexes
+  @@index([isPinned, publishedAt])  // Used in findAllAnnouncements() orderBy
 }
 
 model Budget {

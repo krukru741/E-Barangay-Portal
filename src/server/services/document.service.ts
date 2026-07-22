@@ -1,8 +1,12 @@
-import { findAllDocumentRequests, createDocumentRequestRecord, updateDocumentStatus, findDocumentRequestById } from '../repositories/document.repository'
+import { findAllDocumentRequests, countDocumentRequests, createDocumentRequestRecord, updateDocumentStatus, findDocumentRequestById } from '../repositories/document.repository'
 import { DocumentRequestInput } from 'src/lib/validations/document.schema'
 
-export async function getDocumentRequests() {
-  return await findAllDocumentRequests()
+export async function getDocumentRequests(page = 1) {
+  const [data, total] = await Promise.all([
+    findAllDocumentRequests(page),
+    countDocumentRequests(),
+  ])
+  return { data, total, page, pageSize: 50 }
 }
 
 export async function createDocumentRequest(data: DocumentRequestInput) {
