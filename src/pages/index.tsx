@@ -38,6 +38,8 @@ const Dashboard = () => {
   const [recentDocs, setRecentDocs] = useState<any[]>([])
   const [recentBlotters, setRecentBlotters] = useState<any[]>([])
   const [announcements, setAnnouncements] = useState<any[]>([])
+  const [financials, setFinancials] = useState<any>(null)
+  const [demographics, setDemographics] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -50,6 +52,8 @@ const Dashboard = () => {
         setRecentDocs(data.recentDocuments || [])
         setRecentBlotters(data.recentBlotters || [])
         setAnnouncements(data.latestAnnouncements || [])
+        setFinancials(data.financials)
+        setDemographics(data.demographics)
         setLoading(false)
       })
       .catch(err => {
@@ -114,6 +118,88 @@ const Dashboard = () => {
           </Card>
         </Grid>
       ))}
+
+      {/* NEW: Financial Overview */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ height: '100%', boxShadow: '0 4px 18px 0 rgba(0,0,0,0.05)' }}>
+          <CardHeader title='Financial Overview' titleTypographyProps={{ sx: { fontWeight: 600 } }} />
+          <CardContent>
+            <Box sx={{ mb: 4, p: 3, borderRadius: 1, background: 'rgba(76, 175, 80, 0.08)', border: '1px solid rgba(76, 175, 80, 0.2)' }}>
+              <Typography variant='caption' sx={{ fontWeight: 600, color: 'success.main', textTransform: 'uppercase' }}>Total Collections (Released Docs)</Typography>
+              <Typography variant='h4' sx={{ fontWeight: 700, color: 'success.main', mt: 1 }}>
+                ₱{financials?.totalRevenue?.toLocaleString(undefined, { minimumFractionDigits: 2 }) || '0.00'}
+              </Typography>
+            </Box>
+            <Grid container spacing={4}>
+              <Grid item xs={6}>
+                <Typography variant='caption' color='textSecondary' sx={{ fontWeight: 600, textTransform: 'uppercase' }}>Barangay Budget</Typography>
+                <Typography variant='h6' sx={{ fontWeight: 700 }}>
+                  ₱{financials?.totalBudget?.toLocaleString(undefined, { minimumFractionDigits: 2 }) || '0.00'}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant='caption' color='error' sx={{ fontWeight: 600, textTransform: 'uppercase' }}>Total Expenditures</Typography>
+                <Typography variant='h6' sx={{ fontWeight: 700, color: 'error.main' }}>
+                  ₱{financials?.totalExpenditure?.toLocaleString(undefined, { minimumFractionDigits: 2 }) || '0.00'}
+                </Typography>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      {/* NEW: Resident Demographics */}
+      <Grid item xs={12} md={8}>
+        <Card sx={{ height: '100%', boxShadow: '0 4px 18px 0 rgba(0,0,0,0.05)' }}>
+          <CardHeader title='Resident Demographics' titleTypographyProps={{ sx: { fontWeight: 600 } }} />
+          <CardContent>
+            <Grid container spacing={4}>
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {!loading && demographics?.gender && (
+                    <ReactApexcharts
+                      options={{
+                        labels: ['Male', 'Female', 'Other'],
+                        colors: ['#1e88e5', '#e91e63', '#9e9e9e'],
+                        dataLabels: { enabled: true },
+                        legend: { position: 'bottom' },
+                        plotOptions: { pie: { donut: { size: '65%' } } }
+                      }}
+                      series={[
+                        demographics.gender.MALE || 0,
+                        demographics.gender.FEMALE || 0,
+                        demographics.gender.OTHER || 0
+                      ]}
+                      type='donut'
+                      height={250}
+                    />
+                  )}
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant='subtitle2' sx={{ mb: 2, fontWeight: 700, textTransform: 'uppercase', color: 'text.secondary' }}>Vulnerable Sectors</Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 5 }}>
+                  <Chip label={`Seniors: ${demographics?.vulnerableSectors?.senior || 0}`} color="primary" variant="outlined" sx={{ fontWeight: 600 }} />
+                  <Chip label={`PWDs: ${demographics?.vulnerableSectors?.pwd || 0}`} color="secondary" variant="outlined" sx={{ fontWeight: 600 }} />
+                  <Chip label={`Solo Parents: ${demographics?.vulnerableSectors?.soloParent || 0}`} color="info" variant="outlined" sx={{ fontWeight: 600 }} />
+                  <Chip label={`4Ps: ${demographics?.vulnerableSectors?.fourPs || 0}`} color="warning" variant="outlined" sx={{ fontWeight: 600 }} />
+                </Box>
+                <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 700, textTransform: 'uppercase', color: 'text.secondary' }}>Community</Typography>
+                <Box sx={{ display: 'flex', gap: 4 }}>
+                  <Box>
+                    <Typography variant='h5' sx={{ fontWeight: 700 }}>{demographics?.households || 0}</Typography>
+                    <Typography variant='caption' color='textSecondary'>Total Households</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant='h5' sx={{ fontWeight: 700, color: 'primary.main' }}>{demographics?.voters || 0}</Typography>
+                    <Typography variant='caption' color='textSecondary'>Registered Voters</Typography>
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
 
       {/* Recent Document Requests */}
       <Grid item xs={12} md={7}>

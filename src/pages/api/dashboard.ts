@@ -25,6 +25,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       totalResidents,
       totalBlotters,
       totalAnnouncements,
+      revenueAgg,
+      budgetAgg,
+      expenditureAgg,
+      genderGroup,
+      seniorCount,
+      pwdCount,
+      soloParentCount,
+      fourPsCount,
+      householdCount,
+      voterCount,
       recentDocuments,
       recentBlotters,
       latestAnnouncements,
@@ -33,6 +43,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       prisma.resident.count({ where: { isMerged: false, deletedAt: null } }),
       prisma.blotter.count(),
       prisma.announcement.count(),
+
+      // Financials
+      prisma.documentRequest.aggregate({ _sum: { feeAmount: true }, where: { status: 'RELEASED' } }),
+      prisma.budget.aggregate({ _sum: { totalAmount: true } }),
+      prisma.expenditure.aggregate({ _sum: { amount: true } }),
+
+      // Demographics
+      prisma.resident.groupBy({ by: ['gender'], _count: true, where: { isMerged: false, deletedAt: null } }),
+      prisma.resident.count({ where: { isSenior: true, isMerged: false, deletedAt: null } }),
+      prisma.resident.count({ where: { isPWD: true, isMerged: false, deletedAt: null } }),
+      prisma.resident.count({ where: { isSoloParent: true, isMerged: false, deletedAt: null } }),
+      prisma.resident.count({ where: { is4PsBeneficiary: true, isMerged: false, deletedAt: null } }),
+      prisma.household.count(),
+      prisma.resident.count({ where: { isVoter: true, isMerged: false, deletedAt: null } }),
 
       // Recent 5 documents — select only what the table needs, NO photo blob
       prisma.documentRequest.findMany({
@@ -79,6 +103,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({
       summary: { totalResidents, totalBlotters, totalAnnouncements },
+      financials: {
+        totalRevenue: revenueAgg._sum.feeAmount || 0,
+        totalBudget: budgetAgg._sum.totalAmount || 0,
+        totalExpenditure: expenditureAgg._sum.amount || 0,
+      },
+      demographics: {
+        gender: genderGroup.reduce((acc: any, curr) => ({ ...acc, [curr.gender]: curr._count }), {}),
+        vulnerableSectors: {
+          senior: seniorCount,
+          pwd: pwdCount,
+          soloParent: soloParentCount,
+          fourPs: fourPsCount,
+        },
+        households: householdCount,
+        voters: voterCount,
+      },
       recentDocuments,
       recentBlotters,
       latestAnnouncements,
