@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from 'src/pages/api/auth/[...nextauth]'
 import { getResidentProfile, updateResident } from 'src/server/services/resident.service'
 import { residentSchema } from 'src/lib/validations/resident.schema'
 import { ZodError } from 'zod'
@@ -21,8 +23,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'PUT') {
     try {
+      const session = await getServerSession(req, res, authOptions)
+      const userId = (session?.user as any)?.id
+
       const validatedData = residentSchema.parse(req.body)
-      const updatedResident = await updateResident(id as string, validatedData)
+      const updatedResident = await updateResident(id as string, validatedData, userId)
       return res.status(200).json(updatedResident)
     } catch (error: any) {
       if (error instanceof ZodError) {

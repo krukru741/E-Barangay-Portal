@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from 'src/pages/api/auth/[...nextauth]'
 import { getResidents, createResident } from 'src/server/services/resident.service'
 import { residentSchema } from 'src/lib/validations/resident.schema'
 
@@ -21,10 +23,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
+      const session = await getServerSession(req, res, authOptions)
+      const userId = (session?.user as any)?.id
+
       // Validate input using Zod
       const validatedData = residentSchema.parse(req.body)
 
-      const resident = await createResident(validatedData)
+      const resident = await createResident(validatedData, userId)
       
       return res.status(201).json(resident)
     } catch (error: any) {

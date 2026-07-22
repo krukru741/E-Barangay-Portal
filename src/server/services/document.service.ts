@@ -1,5 +1,6 @@
 import { findAllDocumentRequests, countDocumentRequests, createDocumentRequestRecord, updateDocumentStatus, findDocumentRequestById } from '../repositories/document.repository'
 import { DocumentRequestInput } from 'src/lib/validations/document.schema'
+import { logAudit } from './audit.service'
 
 export async function getDocumentRequests(page = 1) {
   const [data, total] = await Promise.all([
@@ -14,7 +15,19 @@ export async function createDocumentRequest(data: DocumentRequestInput) {
 }
 
 export async function updateRequestStatus(id: string, status: string, issuedById?: string) {
-  return await updateDocumentStatus(id, status, issuedById)
+  const updated = await updateDocumentStatus(id, status, issuedById)
+
+  if (issuedById) {
+    await logAudit({
+      userId: issuedById,
+      action: 'UPDATE',
+      entity: 'DOCUMENT_REQUEST',
+      entityId: id,
+      details: { newStatus: status, type: updated.type }
+    })
+  }
+
+  return updated
 }
 
 export async function getDocumentRequest(id: string) {

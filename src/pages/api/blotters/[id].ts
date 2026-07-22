@@ -13,6 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const userRole = (session.user as any).role as UserRole
+  const userId = (session.user as any).id
   const id = req.query.id as string
 
   if (!id) return res.status(400).json({ error: 'Blotter ID is required' })
@@ -26,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'PATCH') {
       const { status, actionTaken } = req.body
       if (!status) return res.status(400).json({ error: 'Status is required' })
-      const updatedBlotter = await changeBlotterStatus(id, status as BlotterStatus, userRole, actionTaken)
+      const updatedBlotter = await changeBlotterStatus(id, status as BlotterStatus, userRole, userId, actionTaken)
       return res.status(200).json(updatedBlotter)
     }
 

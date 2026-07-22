@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from 'src/pages/api/auth/[...nextauth]'
 import { getDocumentRequest, updateRequestStatus } from 'src/server/services/document.service'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -20,8 +22,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'PATCH') {
     try {
-      const { status, issuedById } = req.body
-      const updated = await updateRequestStatus(id, status, issuedById)
+      const session = await getServerSession(req, res, authOptions)
+      const userId = (session?.user as any)?.id
+
+      const { status } = req.body
+      const updated = await updateRequestStatus(id, status, userId)
       return res.status(200).json(updated)
     } catch (error) {
       return res.status(500).json({ message: 'Error updating document request' })

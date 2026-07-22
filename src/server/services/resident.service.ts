@@ -1,6 +1,7 @@
 import { findAllResidents, countResidents, findResidentByExactMatch, createResidentRecord, createHousehold, findResidentById, updateResidentRecord } from '../repositories/resident.repository'
 import { ResidentInput } from 'src/lib/validations/resident.schema'
 import { prisma } from 'src/lib/db'
+import { logAudit } from './audit.service'
 
 export async function getResidents(page = 1, search?: string, sortBy?: string) {
   const [data, total] = await Promise.all([
@@ -14,7 +15,7 @@ export async function getResidentProfile(id: string) {
   return await findResidentById(id)
 }
 
-export async function createResident(data: ResidentInput) {
+export async function createResident(data: ResidentInput, userId?: string) {
   // Check for duplicates
   const existing = await findResidentByExactMatch(data.firstName, data.lastName, new Date(data.birthDate))
   if (existing) {
@@ -40,10 +41,22 @@ export async function createResident(data: ResidentInput) {
     householdId = newHousehold.id
   }
 
-  return await createResidentRecord(data, householdId)
+  const resident = await createResidentRecord(data, householdId)
+  
+  if (userId) {
+    await logAudit({
+      userId,
+      action: 'CREATE',
+      entity: 'RESIDENT',
+      entityId: resident.id,
+      details: { name: `${resident.firstName} ${resident.lastName}` }
+    })
+  }
+
+  return resident
 }
 
-export async function updateResident(id: string, data: ResidentInput) {
+export async function updateResident(id: string, data: ResidentInput, userId?: string) {
   // Check if updating to an already existing duplicate resident name (other than self)
   const existing = await findResidentByExactMatch(data.firstName, data.lastName, new Date(data.birthDate))
   if (existing && existing.id !== id) {
@@ -87,5 +100,17 @@ export async function updateResident(id: string, data: ResidentInput) {
     })
   }
 
-  return await updateResidentRecord(id, data, householdId)
+  const updatedResident = await updateResidentRecord(id, data, householdId)
+
+  if (userId) {
+    await logAudit({
+      userId,
+      action: 'UPDATE',
+      entity: 'RESIDENT',
+      entityId: id,
+      details: { name: `${updatedResident.firstName} ${updatedResident.lastName}` }
+    })
+  }
+
+  return updatedResident
 }

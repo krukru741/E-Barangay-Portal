@@ -1,6 +1,7 @@
 import { findAllBlotters, findBlotterById, createBlotterRecord, updateBlotterStatus, addHearingToBlotter, getNextBlotterNumber } from '../repositories/blotter.repository'
 import { BlotterInput, HearingInput } from 'src/lib/validations/blotter.schema'
 import { BlotterStatus, UserRole } from '@prisma/client'
+import { logAudit } from './audit.service'
 
 // Helper to check authorization
 function checkAdminOrStaffRole(userRole?: UserRole) {
@@ -29,9 +30,21 @@ export async function createBlotter(data: BlotterInput, userRole: UserRole) {
   return await createBlotterRecord(data)
 }
 
-export async function changeBlotterStatus(id: string, status: BlotterStatus, userRole: UserRole, actionTaken?: string) {
+export async function changeBlotterStatus(id: string, status: BlotterStatus, userRole: UserRole, userId: string, actionTaken?: string) {
   checkAdminOrStaffRole(userRole)
-  return await updateBlotterStatus(id, status, actionTaken)
+  const updated = await updateBlotterStatus(id, status, actionTaken)
+
+  if (userId) {
+    await logAudit({
+      userId,
+      action: 'UPDATE',
+      entity: 'BLOTTER',
+      entityId: id,
+      details: { newStatus: status, actionTaken }
+    })
+  }
+
+  return updated
 }
 
 export async function addHearing(blotterId: string, data: HearingInput, userRole: UserRole) {
