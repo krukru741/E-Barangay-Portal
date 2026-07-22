@@ -19,6 +19,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     const page = await browser.newPage()
     
+    // Debug logging
+    page.on('console', msg => console.log('PUPPETEER CONSOLE:', msg.text()));
+    page.on('pageerror', error => console.error('PUPPETEER ERROR:', error.message));
+    page.on('requestfailed', request => console.error('PUPPETEER REQUEST FAILED:', request.url(), request.failure()?.errorText));
+
     // Set viewport to a good print size
     await page.setViewport({ width: 1200, height: 1600 })
     
