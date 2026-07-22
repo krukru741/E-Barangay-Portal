@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await page.goto(url, { waitUntil: 'domcontentloaded' })
     
     // Wait for the React component to finish loading and fetching data
-    await page.waitForSelector('#print-ready', { timeout: 15000 })
+    await page.waitForSelector('#print-ready', { timeout: 60000 })
 
     const pageSize = format === 'Legal' ? 'Legal' : 'A4'
 

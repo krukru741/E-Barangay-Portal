@@ -5,14 +5,6 @@ import { fetchOfficials, registerOfficial, updateOfficial } from 'src/server/ser
 import { updateOfficialSchema } from 'src/lib/validations/official.schema'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions)
-  
-  if (!session) {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
-
-  const role = (session.user as any)?.role
-
   if (req.method === 'GET') {
     try {
       const officials = await fetchOfficials()
@@ -21,6 +13,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: error.message })
     }
   }
+
+  const session = await getServerSession(req, res, authOptions)
+  
+  if (!session) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+
+  const role = (session.user as any)?.role
 
   if (req.method === 'POST') {
     if (!['ADMIN', 'SUPER_ADMIN'].includes(role)) {

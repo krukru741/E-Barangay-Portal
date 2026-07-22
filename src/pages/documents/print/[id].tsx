@@ -354,3 +354,4 @@ export default function DocumentPrintView() {
 }
 
 DocumentPrintView.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+DocumentPrintView.authGuard = false
